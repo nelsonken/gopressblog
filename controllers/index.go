@@ -4,16 +4,18 @@ import (
 	"net/http"
 
 	"github.com/fpay/gopress"
-	"github.com/jinzhu/gorm"
 	"blog/services"
 	"blog/models"
+	. "blog/functions"
 )
 
 // IndexController
 type IndexController struct {
 	// Uncomment this line if you want to use services in the app
-	// app *gopress.App
+	app *gopress.App
 	db *services.DBService
+	currentUser *models.User
+	title string
 }
 
 // NewIndexController returns index controller instance.
@@ -27,17 +29,20 @@ func (c *IndexController) RegisterRoutes(app *gopress.App) {
 	// Uncomment this line if you want to use services in the app
 	// c.app = app
 	c.db = app.Services.Get(services.DBServerName).(*services.DBService)
-	app.GET("/", c.HomeAction)
-	// app.POST("/index/sample", c.SamplePostAction)
-	// app.PUT("/index/sample", c.SamplePutAction)
-	// app.DELETE("/index/sample", c.SampleDeleteAction)
+	c.app = app
+	c.title = "Home"
+	c.currentUser = app.Services.Get(services.UserServiceName).(*services.UserService).User
+	app.GET("/", c.Home)
 }
 
-// SampleGetAction Action
+// HomeAction Action
+// show some no use data analyes
 // Parameter gopress.Context is just alias of echo.Context
-func (c *IndexController) HomeAction(ctx gopress.Context) error {
-	// Or you can get app from request context
-	// app := gopress.AppFromContext(ctx)
+func (c *IndexController) Home(ctx gopress.Context) error {
+	data := map[string]interface{}{
+		"titile": c.title,
+		"avatar": GetAvatarURL(c.currentUser.Avatar),
+	}
 
-	return ctx.String(http.StatusOK, "welcome to my blog")
+	return ctx.Render(http.StatusOK, "index", data)
 }

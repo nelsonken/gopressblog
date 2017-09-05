@@ -65,5 +65,4 @@ func (s *DBService) ServiceName() string {
 
 // RegisterContainer is used to implements gopress.Service
 func (s *DBService) RegisterContainer(c *gopress.Container) {
-
 }

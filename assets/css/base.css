@@ -1,0 +1,16 @@
+body {
+    background-color: aliceblue;
+    padding: 10px;
+}
+
+div, header, footer, nav {
+    background-color: ivory;
+}
+
+nva > ul, li {
+    float: left;
+    padding: 10px;
+    margin-right: 10px;
+    width: 17%;
+}
+

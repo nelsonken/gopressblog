@@ -1,0 +1,13 @@
+{{> top }}
+{{> header }}
+<div class="div-form">
+<h2>Login</h2>
+<form class="form" action="/login" method="post">
+<div class="form-input"> <label>用户名</label><input type="text" maxlength="20" name="name"/></div>
+<div class="form-input"> <label>密码</label><input type="password" name="password"/></div>
+<div class="form-input"> <label>自动登录</label><input type="checkbox" name="autoLogin" value="yes"/></div>
+<div class="form-submit"> <input type="submit" value="登录"/></div>
+</form>
+</div>
+{{> footer }}
+{{> bottom }}

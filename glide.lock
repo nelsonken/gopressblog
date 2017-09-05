@@ -1,5 +1,5 @@
-hash: 491625230eb24184951d13e57b9057060ad922b28e90844f13891c64d3a771a1
-updated: 2017-09-04T20:39:53.993060788+08:00
+hash: e39e5fb1262134ae62e428340e59cba0bcec50f24514b1fedfc5ea66c3aaa01e
+updated: 2017-09-05T14:42:39.415585411+08:00
 imports:
 - name: github.com/aymerick/raymond
   version: a2232af10b53ef1ae5a767f5178db3a6c1dab655
@@ -8,7 +8,13 @@ imports:
   - lexer
   - parser
 - name: github.com/fpay/gopress
-  version: b4fa060d3c16f423cc6f865213e6a73133cf5f6e
+  version: 0a3ee1018125529bd480ccfc378989cff6b91867
+- name: github.com/go-playground/locales
+  version: 1e5f1161c6416a5ff48840eb8724a394e48cc534
+  subpackages:
+  - currency
+- name: github.com/go-playground/universal-translator
+  version: b32fa301c9fe55953584134cb6853a13c87ec0a1
 - name: github.com/go-sql-driver/mysql
   version: 26471af196a17ee75a22e6481b5a5897fb16b081
 - name: github.com/jinzhu/gorm
@@ -47,6 +53,8 @@ imports:
   subpackages:
   - unix
   - windows
+- name: gopkg.in/go-playground/validator.v9
+  version: d529ee1b0f30352444f507cc6cdac96bfd12decc
 - name: gopkg.in/yaml.v2
   version: eb3733d160e74a9c7e442f435eb3bea458e1d19f
 testImports: []

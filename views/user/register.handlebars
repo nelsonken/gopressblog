@@ -1,0 +1,15 @@
+{{> top }}
+{{> header }}
+<div class="div-form">
+<h2>Register</h2>
+<form class="form" action="/register" method="post">
+<span class="error">{{ message }}</span>
+<div class="form-input"> <label>用户名</label><input type="text" maxlength="20" name="name"/></div>
+<div class="form-input"> <label>密码</label><input type="password" name="password" maxlength="32" /></div>
+<div class="form-input"> <label>重复密码</label><input type="password" name="password_confirm" maxlength="32"/></div>
+<div class="form-input"> <label><small><a href="#">注册协议</a></small></label><input type="checkbox" name="agree" value="agree"/></div>
+<div class="form-submit"> <input type="submit" value="注册"/></div>
+</form>
+</div>
+{{> footer }}
+{{> bottom }}

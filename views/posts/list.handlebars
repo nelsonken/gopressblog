@@ -1,0 +1,12 @@
+{{> top }}
+{{> header }}
+{{> nav }}
+<div class="div-container">
+    <ul>
+        {{#each posts}}
+        <li><a href="/post/{{ id }}">{{ title }}</a><p>{{ create_time }}--{{ authorID }} </p></li>
+        {{/each}}
+    </ul>
+</div>
+{{> footer }}
+{{> bottom }}
