@@ -1,0 +1,11 @@
+package: blog
+import:
+- package: github.com/fpay/gopress
+- package: github.com/jinzhu/gorm
+  version: ^1.0.0
+  subpackages:
+  - dialects/mysql
+- package: golang.org/x/crypto
+  subpackages:
+  - bcrypt
+- package: gopkg.in/yaml.v2
