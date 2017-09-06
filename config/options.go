@@ -8,6 +8,7 @@ import (
 
 type Options struct {
 	Database *services.DBOptions `yaml:"database"`
+	ScoreRule *services.ScoreRule `yaml:"score"`
 }
 
 func GetConfig(configFile string, opts *Options) {
@@ -21,3 +22,4 @@ func GetConfig(configFile string, opts *Options) {
 		panic(err)
 	}
 }
+

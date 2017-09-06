@@ -3,6 +3,8 @@ package functions
 import (
 	"bytes"
 	"fmt"
+	"net/http"
+	"time"
 )
 
 // GetAvatarURL get avatar url by img name
@@ -20,6 +22,9 @@ func GeneratePager(page, total, limit int, sortBy, URL string, filter map[string
 	var pagerCount = 8
 	var prevPage = "上一页"
 	var nextPage = "下一页"
+	if total == 0 || limit == 0 || total <= limit {
+		return ""
+	}
 	if total%page == 0 {
 		pagerTotal = total / limit
 	} else {
@@ -50,10 +55,10 @@ func GeneratePager(page, total, limit int, sortBy, URL string, filter map[string
 		buf.WriteString(`</a></li>`)
 	}
 
-	var href = ""
 	if pagerTotal <= pagerCount {
 		pagerCount = pagerTotal
 	}
+	var href string
 	for i := 0; i < pagerCount; i++ {
 		href = fmt.Sprintf("%s?page=%d&sort=%s%s", URL, page+i, sortBy, filterStr.String())
 
@@ -75,4 +80,19 @@ func GeneratePager(page, total, limit int, sortBy, URL string, filter map[string
 	buf.WriteString("</uL></div>")
 
 	return buf.String()
+}
+
+// GetFlashCookie 生成一次性cookie
+func GetFlashCookie(name, value string) *http.Cookie {
+	cookie := &http.Cookie{}
+	cookie.Name = name
+	cookie.Value = value
+	cookie.Expires = time.Now().Add(time.Second * 5)
+	return cookie
+}
+
+// SetCookieExpired set cookie's expires is now
+func SetCookieExpired(cookie *http.Cookie) *http.Cookie {
+	cookie.Expires = time.Now().Add(time.Second * -5)
+	return cookie
 }

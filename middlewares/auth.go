@@ -17,12 +17,12 @@ func NewAuthMiddleware(user *models.User) gopress.MiddlewareFunc {
 			if c.Path() != "/login" && c.Path() != "/register" {
 				cookie, err := c.Cookie("uid")
 				if err != nil {
-					return c.Redirect(301, "/login")
+					return c.Redirect(http.StatusFound, "/login")
 				}
 
 				if cookie.Value == "" {
 					dropCookie(c, cookie)
-					return c.Redirect(301, "/login")
+					return c.Redirect(http.StatusFound, "/login")
 				}
 
 				container := gopress.AppFromContext(c).Services
@@ -31,11 +31,11 @@ func NewAuthMiddleware(user *models.User) gopress.MiddlewareFunc {
 				uid, err := strconv.Atoi(cookie.Value)
 				if err != nil {
 					dropCookie(c, cookie)
-					return c.Redirect(301, "/login")
+					return c.Redirect(http.StatusFound, "/login")
 				}
 				if dbs.ORM.First(user, uid).RecordNotFound() {
 					dropCookie(c, cookie)
-					return c.Redirect(301, "/login")
+					return c.Redirect(http.StatusFound, "/login")
 				}
 				us := services.NewUserService()
 				us.User = user

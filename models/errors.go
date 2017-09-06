@@ -5,14 +5,19 @@ import (
 )
 
 const (
-	DBWriteError   = 0
-	DBReadError    = -1
-	UserNotFound   = 1
-	PasswordError  = 2
+	// DBWriteError database write failed
+	DBWriteError = 0
+	// DBReadError database read failed
+	DBReadError = -1
+	// UserNotFound user name not exists
+	UserNotFound = 1
+	// PasswordError password error
+	PasswordError = 2
+	// UserNameExists duplicate username
 	UserNameExists = 3
 )
 
-// LoginError
+// LoginError login err
 type LoginError struct {
 	Message string
 	ErrType int
@@ -21,10 +26,10 @@ type LoginError struct {
 
 // Error error interface
 func (le LoginError) Error() string {
-	return fmt.Sprintf("%s:%v", le.Message, le.Err)
+	return fmt.Sprintf("%s", le.Message)
 }
 
-// LoginError
+// RegisterError reg err
 type RegisterError struct {
 	Message string
 	ErrType int
@@ -33,7 +38,7 @@ type RegisterError struct {
 
 // Error error interface
 func (re RegisterError) Error() string {
-	return fmt.Sprintf("%s:%v", re.Message, re.Err)
+	return fmt.Sprintf("%s", re.Message)
 }
 
 // DBError db error
@@ -45,5 +50,5 @@ type DBError struct {
 
 // Error error interface
 func (de DBError) Error() string {
-	return fmt.Sprintf("%s:%v", de.Message, de.Err)
+	return fmt.Sprintf("%s", de.Message)
 }

@@ -1,12 +1,28 @@
-{{> top }}
-{{> header }}
-{{> nav }}
-<div class="div-container">
-    <ul>
-        {{#each posts}}
-        <li><a href="/post/{{ id }}">{{ title }}</a><p>{{ create_time }}--{{ authorID }} </p></li>
-        {{/each}}
-    </ul>
+{{> top }} {{> header }} {{> nav }}
+<div class="row marketing">
+  <div class="col-lg-10 col-lg-offset-1">
+    <div class="row row-width float-left">
+      <div class="col-lg-6 float-left post-list">
+        <dl class="dl">
+          {{#each posts}}
+          <dt><a href="/posts/{{ ID }}" class="post-title">{{ title }}</a></dt>
+          <dd>{{ createdAt }}</dd>
+          <br/>
+          {{/each}}
+          <dt>{{{ pagerContent }}}</dt>
+        </dl>
+        {{{ pagerContent }}}
+      </div>
+      <div class="col-lg-4 float-left ranks">
+        <h4>今日活跃排行榜</h4>
+        <ol>
+          <li>老王</li>
+          <li>老李</li>
+          <li>老张</li>
+          <li>老马</li>
+        </ol>
+      </div>
+    </div>
+  </div>
 </div>
-{{> footer }}
-{{> bottom }}
+{{> footer }} {{> bottom }}

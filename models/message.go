@@ -5,18 +5,23 @@ import (
 )
 
 const (
-	MessageTypeReciveComment      = 1
+	// MessageTypeReciveComment got a comment
+	MessageTypeReciveComment = 1
+	// MessageTypeReciveCommentReply got a reply
 	MessageTypeReciveCommentReply = 2
-	MessageTypeReciveGold         = 3
-	MessageTypeSystem             = 4
-	SystemFrom                    = 1
+	// MessageTypeGotScore get a score
+	MessageTypeGotScore = 3
+	// MessageTypeSystem  system msg
+	MessageTypeSystem = 4
+	// SystemUID systemUID
+	SystemUID = 1
 )
 
 // Message table
 type Message struct {
 	gorm.Model
-	FromUserID  int
-	ToUserID    int    `gorm:"index"`
+	FromUserID  uint
+	ToUserID    uint   `gorm:"index"`
 	Title       string `gorm:"not null;type:varchar(50)"`
 	Content     string
 	MessageType uint
@@ -24,7 +29,7 @@ type Message struct {
 }
 
 // PutMessage put message to
-func (m *Message) PutMessage(ORM *gorm.DB, from, to int, title, content string, messageType uint) error {
+func (m *Message) PutMessage(ORM *gorm.DB, from, to uint, title, content string, messageType uint) error {
 	m.FromUserID = from
 	m.ToUserID = to
 	m.Title = title

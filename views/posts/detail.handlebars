@@ -1,2 +1,24 @@
-<!-- template: post -->
-<div>This is template post</div>
+{{> top }}
+{{> header }}
+{{> nav }}
+<div class="row marketing">
+  <div class="col-lg-10 col-lg-offset-1">
+  <h2 class="post-title">{{ post.title }}</h2>
+  <p class="post-second-title">{{ post.authorID }}&nbsp;&nbsp;{{ post.createdAt }}</p>
+  <div class="post-content">{{ post.content }}</div>
+  <div class="post-comments">
+    {{#each comments}}
+    <div class="post-comment"></div>
+    {{/each}}
+    <form method="post" actions="/comments/create">
+      <div class="form-group">
+      <input type="hidden" name="post_id" value="{{ post.id }}"/>
+      <textarea name="comment" class="form-control"></textarea>
+      <input type="submit" class="btn-primary" value="评论"/>
+    </div>
+    </form>
+  </div>
+</div>
+</div>
+{{> footer }}
+{{> bottom }}

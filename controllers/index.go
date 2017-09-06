@@ -3,19 +3,18 @@ package controllers
 import (
 	"net/http"
 
-	"github.com/fpay/gopress"
-	"blog/services"
 	"blog/models"
-	. "blog/functions"
+	"blog/services"
+	"github.com/fpay/gopress"
 )
 
-// IndexController
+// IndexController action pointer
 type IndexController struct {
 	// Uncomment this line if you want to use services in the app
-	app *gopress.App
-	db *services.DBService
+	app         *gopress.App
+	db          *services.DBService
 	currentUser *models.User
-	title string
+	title       string
 }
 
 // NewIndexController returns index controller instance.
@@ -30,19 +29,14 @@ func (c *IndexController) RegisterRoutes(app *gopress.App) {
 	// c.app = app
 	c.db = app.Services.Get(services.DBServerName).(*services.DBService)
 	c.app = app
-	c.title = "Home"
+	c.title = "首页"
 	c.currentUser = app.Services.Get(services.UserServiceName).(*services.UserService).User
 	app.GET("/", c.Home)
 }
 
-// HomeAction Action
+// Home Action
 // show some no use data analyes
 // Parameter gopress.Context is just alias of echo.Context
 func (c *IndexController) Home(ctx gopress.Context) error {
-	data := map[string]interface{}{
-		"titile": c.title,
-		"avatar": GetAvatarURL(c.currentUser.Avatar),
-	}
-
-	return ctx.Render(http.StatusOK, "index", data)
+	return ctx.Redirect(http.StatusMovedPermanently, "/posts")
 }

@@ -4,6 +4,7 @@ import (
 	"github.com/jinzhu/gorm"
 )
 
+// PostList paging query result
 type PostList struct {
 	PageCount int
 	Page      int
@@ -16,11 +17,11 @@ type PostList struct {
 // Post table
 type Post struct {
 	gorm.Model
-	Tittle        string `gorm:"not null;type:varchar(40);"`
+	Title         string `gorm:"not null;type:varchar(40);"`
 	Content       string `gorm:"not null;type:text"`
 	Comments      []Comment
-	CommentNumber int `gorm:not null;default 0;index`
-	AuthorID      int `gorm:"index"`
+	CommentNumber int  `gorm:"not null;default 0;index"`
+	AuthorID      uint `gorm:"index"`
 }
 
 // TableName provide tabel naem to gorm
@@ -35,8 +36,7 @@ func (p *Post) ListPosts(ORM *gorm.DB, page, limit int, orderBy string) (*PostLi
 	}
 	start := limit * (page - 1)
 	posts := []*Post{}
-
-	if err := ORM.Offset(start).Limit(limit).Order(orderBy).Find(posts).Error; err != nil {
+	if err := ORM.Offset(start).Limit(limit).Order(orderBy).Find(&posts).Error; err != nil {
 		return nil, DBError{"没有找到文章", DBReadError, err}
 	}
 	var total int
@@ -49,6 +49,43 @@ func (p *Post) ListPosts(ORM *gorm.DB, page, limit int, orderBy string) (*PostLi
 	pl.Total = total
 	pl.Posts = posts
 	pl.OrderBy = orderBy
+	pl.Limit = limit
 
 	return pl, nil
+}
+
+// CreatePost 新建文章
+func (p *Post) CreatePost(ORM *gorm.DB, authorID uint, title, content string, score float64) error {
+	p.Title = title
+	p.Content = content
+	p.AuthorID = authorID
+	p.CommentNumber = 0
+
+	tx := ORM.Begin()
+	if err := tx.Save(p).Error; err != nil {
+		tx.Rollback()
+		return DBError{"保存失败", DBWriteError, err}
+	}
+
+	u := &Account{}
+
+	if tx.First(u, "owner_id = ?", authorID).RecordNotFound() {
+		u.OwnerID = authorID
+		u.TodayIncome = score
+		u.Total = score
+		if err := tx.Save(u).Error; err != nil {
+			tx.Rollback()
+			return DBError{"保存失败", DBWriteError, err}
+		}
+	} else {
+		u.Total += score
+		u.TodayIncome += score
+		if err := tx.Model(u).Updates(Account{Total: u.Total, TodayIncome: u.TodayIncome}).Error; err != nil {
+			tx.Rollback()
+			return DBError{"保存失败", DBWriteError, err}
+		}
+	}
+	tx.Commit()
+
+	return nil
 }

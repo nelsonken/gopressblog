@@ -1,2 +1,14 @@
-<!-- template: message -->
-<div>This is template message</div>
+{{> top }} {{> header }}
+<div class="row marketing">
+  <h2>消息</h2>
+  <div class="col-lg-10 col-lg-offset-1">
+    {{#each messages}}
+    <div class="title">
+      {{ title }}
+    </div>
+    <div class="content hide" /> {{ content }}
+  </div>
+  {{/each}}
+</div>
+</div>
+{{> footer }} {{> bottom }}

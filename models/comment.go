@@ -9,7 +9,7 @@ type Comment struct {
 	gorm.Model
 	PostID   int `gorm:"index"`
 	Content  string `gorm:"not null;type:varchar(200)"`
-	AuthorID int `gorm:"index"`
+	AuthorID uint `gorm:"index"`
 }
 
 // TableName provide tabel naem to gorm

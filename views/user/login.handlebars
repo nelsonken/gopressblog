@@ -1,13 +1,19 @@
-{{> top }}
-{{> header }}
-<div class="div-form">
-<h2>Login</h2>
-<form class="form" action="/login" method="post">
-<div class="form-input"> <label>用户名</label><input type="text" maxlength="20" name="name"/></div>
-<div class="form-input"> <label>密码</label><input type="password" name="password"/></div>
-<div class="form-input"> <label>自动登录</label><input type="checkbox" name="autoLogin" value="yes"/></div>
-<div class="form-submit"> <input type="submit" value="登录"/></div>
-</form>
+{{> top }} {{> header }}
+<div class="header clearfix">
+  <h2>登录</h2>
+  <h4>gopress blog for training</h4>
 </div>
-{{> footer }}
-{{> bottom }}
+<div class="row marketing">
+  <div class="col-lg-10 col-lg-offset-1">
+    <div class="col-lg-6 col-lg-offset-3">
+      <span class="error">{{ message }}</span>
+      <form class="form" action="/login" method="post">
+        <div class="form-group"><label>用户名</label><input type="text" maxlength="20" class="form-control" name="name"/></div>
+        <div class="form-group"><label>密码</label><input type="password" name="password" class="form-control"/></div>
+        <div class="form-group"><label>自动登录</label><input type="checkbox" name="autoLogin" value="yes"/></div>
+        <div class="form-submit"><input type="submit" value="登录" class="btn-primary" /><a href="/register">注册</a></div>
+      </form>
+    </div>
+  </div>
+</div>
+{{> footer }} {{> bottom }}

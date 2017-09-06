@@ -6,36 +6,37 @@ import (
 )
 
 const (
-	// VlidatorServiceName is the identity of vlidator service
-	VlidatorServiceName = "vlidator"
+	// ValidatorServiceName is the identity of vlidator service
+	ValidatorServiceName = "vlidator"
 )
 
-// VlidatorService type
-type VlidatorService struct {
+// Validator type
+type Validator struct {
 	// Uncomment this line if this service has dependence on other services in the container
 	// c *gopress.Container
 	V *validator.Validate
 }
 
-// NewVlidatorService returns instance of vlidator service
-func NewVlidatorService() *VlidatorService {
-	v := &VlidatorService{}
+// NewValidatorService returns instance of vlidator service
+func NewValidatorService() *Validator {
+	v := &Validator{}
 	v.V = validator.New()
 
 	return v
 }
 
 // ServiceName is used to implements gopress.Service
-func (s *VlidatorService) ServiceName() string {
-	return VlidatorServiceName
+func (s *Validator) ServiceName() string {
+	return ValidatorServiceName
 }
 
 // RegisterContainer is used to implements gopress.Service
-func (s *VlidatorService) RegisterContainer(c *gopress.Container) {
+func (s *Validator) RegisterContainer(c *gopress.Container) {
 	// Uncomment this line if this service has dependence on other services in the container
 	// s.c = c
 }
 
-func (s *VlidatorService) Validate(i interface{}) error {
+// Validate validate a struct data
+func (s *Validator) Validate(i interface{}) error {
 	return s.V.Struct(i)
 }
