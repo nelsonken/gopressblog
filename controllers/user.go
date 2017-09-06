@@ -45,15 +45,13 @@ func (c *UserController) Login(ctx gopress.Context) error {
 	password := ctx.FormValue("password")
 	autoLogin := ctx.FormValue("autoLogin")
 	if name == "" || password == "" {
-		ctx.SetCookie(functions.GetFlashCookie("message", "账号与密码不能为空"))
-		return ctx.Redirect(http.StatusFound, "/login")
+		return ctx.Redirect(http.StatusFound, "/login?message=账号密码不能为空")
 	}
 
 	u := &models.User{}
 	err := u.Login(c.db.ORM, name, password)
 	if err != nil {
-		ctx.SetCookie(functions.GetFlashCookie("message", err.Error()))
-		return ctx.Redirect(http.StatusFound, "/login")
+		return ctx.Redirect(http.StatusFound, "/login?message="+err.Error())
 	}
 	var expired time.Time
 	if autoLogin == "yes" {
@@ -72,11 +70,7 @@ func (c *UserController) Login(ctx gopress.Context) error {
 func (c *UserController) LoginPage(ctx gopress.Context) error {
 	data := map[string]interface{}{
 		"headTitle": "登录",
-	}
-	cookie, err := ctx.Cookie("message")
-	if err == nil {
-		data["message"] = cookie.Value
-		ctx.SetCookie(functions.SetCookieExpired(cookie))
+		"message":   ctx.QueryParam("message"),
 	}
 
 	return ctx.Render(http.StatusOK, "user/login", data)
@@ -92,21 +86,18 @@ func (c *UserController) Register(ctx gopress.Context) error {
 		Agree:           ctx.FormValue("agree"),
 	}
 	if err := c.valid.Validate(rf); err != nil {
-		ctx.SetCookie(functions.GetFlashCookie("message", err.Error()))
-		return ctx.Redirect(http.StatusFound, "/register")
+		return ctx.Redirect(http.StatusFound, "/register?message="+err.Error())
 	}
 
 	if rf.Agree != "agree" {
-		ctx.SetCookie(functions.GetFlashCookie("message", "请阅读注册协议"))
-		return ctx.Redirect(http.StatusFound, "/register")
+		return ctx.Redirect(http.StatusFound, "/register?message=请阅读注册协议")
 	}
 
 	u := &models.User{}
 	err := u.Register(c.db.ORM, rf.Name, rf.Password)
 
 	if err != nil {
-		ctx.SetCookie(functions.GetFlashCookie("message", err.Error()))
-		return ctx.Redirect(http.StatusFound, "/register")
+		return ctx.Redirect(http.StatusFound, "/register?message="+err.Error())
 	}
 
 	return ctx.Redirect(http.StatusFound, "/login")
@@ -117,11 +108,7 @@ func (c *UserController) Register(ctx gopress.Context) error {
 func (c *UserController) RegisterPage(ctx gopress.Context) error {
 	data := map[string]interface{}{
 		"headTitle": "注册",
-	}
-	cookie, err := ctx.Cookie("message")
-	if err == nil {
-		data["message"] = cookie.Value
-		ctx.SetCookie(functions.SetCookieExpired(cookie))
+		"message":   ctx.QueryParam("message"),
 	}
 
 	return ctx.Render(http.StatusOK, "user/register", data)
@@ -134,6 +121,7 @@ func (c *UserController) Logout(ctx gopress.Context) error {
 	if err == nil {
 		cookie = &http.Cookie{Name: "uid", Value: ""}
 	}
+
 	ctx.SetCookie(functions.SetCookieExpired(cookie))
 
 	return ctx.Redirect(http.StatusFound, "/login")

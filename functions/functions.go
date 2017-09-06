@@ -87,6 +87,7 @@ func GetFlashCookie(name, value string) *http.Cookie {
 	cookie := &http.Cookie{}
 	cookie.Name = name
 	cookie.Value = value
+	fmt.Println(value)
 	cookie.Expires = time.Now().Add(time.Second * 5)
 	return cookie
 }

@@ -14,7 +14,7 @@ const (
 	// MessageTypeSystem  system msg
 	MessageTypeSystem = 4
 	// SystemUID systemUID
-	SystemUID = 1
+	SystemUID = 0
 )
 
 // Message table
@@ -29,7 +29,7 @@ type Message struct {
 }
 
 // PutMessage put message to
-func (m *Message) PutMessage(ORM *gorm.DB, from, to uint, title, content string, messageType uint) error {
+func (m *Message) PutMessage(orm *gorm.DB, from, to uint, title, content string, messageType uint) error {
 	m.FromUserID = from
 	m.ToUserID = to
 	m.Title = title
@@ -37,5 +37,5 @@ func (m *Message) PutMessage(ORM *gorm.DB, from, to uint, title, content string,
 	m.MessageType = messageType
 	m.Readed = false
 
-	return ORM.Save(m).Error
+	return orm.Save(m).Error
 }

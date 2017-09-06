@@ -29,5 +29,4 @@ func main() {
 	if u.ID <= 0 {
 		dbService.ORM.Create(&models.User{Name: "system", Password: ""})
 	}
-
 }

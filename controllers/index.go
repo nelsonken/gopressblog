@@ -38,5 +38,5 @@ func (c *IndexController) RegisterRoutes(app *gopress.App) {
 // show some no use data analyes
 // Parameter gopress.Context is just alias of echo.Context
 func (c *IndexController) Home(ctx gopress.Context) error {
-	return ctx.Redirect(http.StatusMovedPermanently, "/posts")
+	return ctx.Redirect(http.StatusMovedPermanently, "/blog/posts")
 }

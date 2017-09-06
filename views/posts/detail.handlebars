@@ -2,23 +2,48 @@
 {{> header }}
 {{> nav }}
 <div class="row marketing">
-  <div class="col-lg-10 col-lg-offset-1">
-  <h2 class="post-title">{{ post.title }}</h2>
-  <p class="post-second-title">{{ post.authorID }}&nbsp;&nbsp;{{ post.createdAt }}</p>
-  <div class="post-content">{{ post.content }}</div>
-  <div class="post-comments">
-    {{#each comments}}
-    <div class="post-comment"></div>
-    {{/each}}
-    <form method="post" actions="/comments/create">
-      <div class="form-group">
-      <input type="hidden" name="post_id" value="{{ post.id }}"/>
-      <textarea name="comment" class="form-control"></textarea>
-      <input type="submit" class="btn-primary" value="评论"/>
+    <div class="col-lg-10 col-lg-offset-1">
+        <div class="panel">
+            <div class="panel-heading">
+                <h2 class="post-title">{{ post.title }}</h2>
+                <div>
+                    <h5>作者:{{ author.name }}&nbsp;-&nbsp;{{ post.createdAt }}</h5>
+                </div>
+            </div>
+            <div class="panel-body"><p id="markdownontent">{{{ post.content }}}</p></div>
+            <div class="panel-footer">
+                <form method="post" action="/blog/comments/create">
+                    <div class="form-group">
+                        <input type="hidden" name="post_id" value="{{ post.ID }}"/>
+                        <textarea name="comment" class="form-control"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <span class="error">{{ message }}</span>
+                        <input type="submit" class="btn-primary" value="评论"/>
+                    </div>
+                </form>
+            </div>
+            <div class="panel-body">
+                {{#each comments}}
+                <div style="border: 1px solid darkgray;text-align: left; padding: 10px;" commentID="{{ ID }}" >
+                    <p class="lead">{{ authorID }} 评论：{{ content }}</p>
+                    <input type="hidden" value="{{ authorID }}" />
+                </div>
+                {{/each}}
+            </div>
+        </div>
     </div>
-    </form>
-  </div>
 </div>
-</div>
+<script type="text/javascript" src="/assets/js/markdown.js"></script>
+<script>
+    function View(content) {
+        content.innerHTML = markdown.toHTML(content.innerHTML);
+    }
+
+    var $ = function (id) {
+        return document.getElementById(id);
+    };
+    View($("markdownontent"));
+</script>
 {{> footer }}
 {{> bottom }}

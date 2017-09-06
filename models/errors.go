@@ -50,5 +50,5 @@ type DBError struct {
 
 // Error error interface
 func (de DBError) Error() string {
-	return fmt.Sprintf("%s", de.Message)
+	return fmt.Sprintf("%s:%v", de.Message, de.Err)
 }

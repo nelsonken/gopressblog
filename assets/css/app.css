@@ -3,6 +3,7 @@
 body {
   padding-top: 20px;
   padding-bottom: 20px;
+  background-color: #fcf8e3;
 }
 
 
@@ -37,6 +38,7 @@ body {
   padding-top: 19px;
   color: #777;
   border-top: 1px solid #e5e5e5;
+  text-align: center;
 }
 
 
@@ -45,6 +47,7 @@ body {
 @media (min-width: 768px) {
   .container {
     max-width: 730px;
+    background-color: whitesmoke;
   }
 }
 
@@ -96,6 +99,7 @@ body {
 
 .error {
   color: red;
+  font-size: 14px;
 }
 
 .hide {
@@ -122,4 +126,8 @@ body {
 .post-title {
   word-wrap: break-word;
   word-break: normal;
+}
+
+.comments {
+  border: 1px solid gray;
 }

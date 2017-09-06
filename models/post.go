@@ -36,11 +36,36 @@ func (p *Post) ListPosts(ORM *gorm.DB, page, limit int, orderBy string) (*PostLi
 	}
 	start := limit * (page - 1)
 	posts := []*Post{}
-	if err := ORM.Offset(start).Limit(limit).Order(orderBy).Find(&posts).Error; err != nil {
+	if err := ORM.Select("id, title, author_id, created_at").Offset(start).Limit(limit).Order(orderBy).Find(&posts).Error; err != nil {
 		return nil, DBError{"没有找到文章", DBReadError, err}
 	}
 	var total int
 	ORM.Model(p).Count(&total)
+	count := len(posts)
+
+	pl := &PostList{}
+	pl.Page = page
+	pl.PageCount = count
+	pl.Total = total
+	pl.Posts = posts
+	pl.OrderBy = orderBy
+	pl.Limit = limit
+
+	return pl, nil
+}
+
+// MyPosts list post
+func (p *Post) MyPosts(ORM *gorm.DB, page, limit int, orderBy string, userID uint) (*PostList, error) {
+	if page < 1 {
+		page = 1
+	}
+	start := limit * (page - 1)
+	posts := []*Post{}
+	if err := ORM.Select("id, title, author_id, created_at").Where("author_id = ?", userID).Offset(start).Limit(limit).Order(orderBy).Find(&posts).Error; err != nil {
+		return nil, DBError{"没有找到文章", DBReadError, err}
+	}
+	var total int
+	ORM.Model(p).Where("author_id = ?", userID).Count(&total)
 	count := len(posts)
 
 	pl := &PostList{}
@@ -69,7 +94,7 @@ func (p *Post) CreatePost(ORM *gorm.DB, authorID uint, title, content string, sc
 
 	u := &Account{}
 
-	if tx.First(u, "owner_id = ?", authorID).RecordNotFound() {
+	if tx.Set("gorm:query_option", "FOR UPDATE").First(u, "owner_id = ?", authorID).RecordNotFound() {
 		u.OwnerID = authorID
 		u.TodayIncome = score
 		u.Total = score
