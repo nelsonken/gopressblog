@@ -10,7 +10,7 @@
                     <h5>作者:{{ author.name }}&nbsp;-&nbsp;{{ post.createdAt }}</h5>
                 </div>
             </div>
-            <div class="panel-body"><p id="markdownontent">{{{ post.content }}}</p></div>
+            <div class="panel-body"><p id="markdownontent"> {{{ post.content }}} </p></div>
             <div class="panel-footer">
                 <form method="post" action="/blog/comments/create">
                     <div class="form-group">
@@ -19,6 +19,12 @@
                     </div>
                     <div class="form-group">
                         <span class="error">{{ message }}</span>
+                        <select name="mention_user_id">
+                            <option value="0">回复作者</option>
+                            {{#each commentator}}
+                            <option value="{{ . }}">回复:&nbsp;{{ getUserName(.) }}</option>
+                            {{/each}}
+                        </select>
                         <input type="submit" class="btn-primary" value="评论"/>
                     </div>
                 </form>
@@ -26,7 +32,7 @@
             <div class="panel-body">
                 {{#each comments}}
                 <div style="border: 1px solid darkgray;text-align: left; padding: 10px;" commentID="{{ ID }}" >
-                    <p class="lead">{{ authorID }} 评论：{{ content }}</p>
+                    <p class="lead">{{ getUserName(authorID) }} 评论：{{ content }}</p>
                     <input type="hidden" value="{{ authorID }}" />
                 </div>
                 {{/each}}

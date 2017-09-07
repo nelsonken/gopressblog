@@ -5,8 +5,8 @@
             <div class="col-lg-10 col-lg-offset-1 post-list">
                 <dl class="dl">
                     {{#each posts}}
-                    <dt><a href="/blog/posts/update/{{ ID }}" class="post-title">{{ title }}</a></dt>
-                    <dd>{{ createdAt }}</dd>
+                    <dt><a href="/blog/posts/{{ ID }}" class="post-title">{{ title }}</a></dt>
+                    <dd><a href="/blog/posts/update/{{ ID }}">修改</a>&nbsp;-&nbsp;{{ createdAt }}</dd>
                     <br/>
                     {{/each}}
                     <dt>{{{ pagerContent }}}</dt>

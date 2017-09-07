@@ -10,7 +10,7 @@ func main() {
 
 	opts := &config.Options{}
 	opts.Database = &services.DBOptions{}
-	config.GetConfig("config/config.yaml", opts)
+	config.GetConfig("../config/config.yaml", opts)
 
 	dbService := services.NewDBService(opts.Database.DBType, opts.Database)
 	defer dbService.ORM.Close()

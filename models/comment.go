@@ -2,6 +2,7 @@ package models
 
 import (
 	"fmt"
+
 	"github.com/jinzhu/gorm"
 )
 
@@ -20,7 +21,7 @@ func (c *Comment) TableName() string {
 	return "comments"
 }
 
-// CommetnPost create a comment for post
+// CommentPost create a comment for post
 func (c *Comment) CommentPost(orm *gorm.DB, postID, authorID, mentionUserID uint, content string, score float64) error {
 	c.AuthorID = authorID
 	c.PostID = postID
@@ -30,11 +31,12 @@ func (c *Comment) CommentPost(orm *gorm.DB, postID, authorID, mentionUserID uint
 
 	// 增加积分
 	account := &Account{}
-	if ta.Set("gorm:query_option", "FOR UPDATE").FirstOrCreate(account, "owner_id = ?", authorID).Error != nil {
+	account.OwnerID = authorID
+	if ta.Set("gorm:query_option", "FOR UPDATE").Where("owner_id = ?", authorID).FirstOrCreate(account).Error != nil {
 		return DBError{"评论作者已不存在", DBReadError, nil}
 	}
 	account.TodayIncome += score
-	account.Total = score
+	account.Total += score
 	ea := ta.Model(account).Update(&Account{Total: account.Total, TodayIncome: account.TodayIncome}).Error
 
 	// 增加评论次数

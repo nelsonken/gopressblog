@@ -1,0 +1,29 @@
+{{> top }}
+{{> header }}
+{{> nav }}
+<div class="row marketing">
+    <div class="col-lg-10 col-lg-offset-1">
+        <div>
+            <h2>系统消息</h2>
+        </div>
+            <div class="panel">
+
+                <div class="panel-body">
+                    <div class="panel-heading">
+                        <a class="btn btn-primary" onclick="javascript:function(){window.location.href='/blog/messages/readall'}">全部已读</a>
+                    </div>
+                    <ul>
+                        {{#each msgs}}
+                        <li>
+                            <dt {{#if readed}}class="readed"{{else}}class="unread"{{/if}}>{{ title }}&nbsp;-&nbsp;{{ createdAt }}</dt>
+                            <dd class="text-content"><p class="lead">{{ content }}</p></dd>
+                        </li>
+                        {{/each}}
+                    </ul>
+                    {{{ pager }}}
+                </div>
+            </div>
+    </div>
+</div>
+{{> footer }}
+{{> bottom }}

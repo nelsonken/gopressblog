@@ -51,6 +51,7 @@ func main() {
 		controllers.NewUserController(),
 		controllers.NewPostController(authGroup),
 		controllers.NewCommentController(authGroup),
+		controllers.NewAccountController(authGroup),
 	)
 
 	// static path

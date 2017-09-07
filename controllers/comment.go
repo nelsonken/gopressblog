@@ -23,6 +23,7 @@ type CommentController struct {
 func NewCommentController(group *echo.Group) *CommentController {
 	c := new(CommentController)
 	c.group = group
+	c.group.POST("/comments/create", c.create)
 
 	return c
 }
@@ -33,7 +34,6 @@ func (c *CommentController) RegisterRoutes(app *gopress.App) {
 	c.db = app.Services.Get(services.DBServerName).(*services.DBService)
 	c.user = app.Services.Get(services.UserServiceName).(*services.UserService).User
 	c.scRule = app.Services.Get(services.ScoreServiceName).(*services.ScoreService).Rule
-	c.group.POST("/comments/create", c.create)
 }
 
 // create Action

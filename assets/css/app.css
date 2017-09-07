@@ -1,133 +1,155 @@
 /* Space out content a bit */
 
 body {
-  padding-top: 20px;
-  padding-bottom: 20px;
-  background-color: #fcf8e3;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    background-color: #fcf8e3;
 }
 
 
 /* Everything but the jumbotron gets side spacing for mobile first views */
 
 .header, .marketing, .footer {
-  padding-right: 15px;
-  padding-left: 15px;
+    padding-right: 15px;
+    padding-left: 15px;
 }
 
 
 /* Custom page header */
 
 .header {
-  padding-bottom: 20px;
-  border-bottom: 1px solid #e5e5e5;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #e5e5e5;
 }
 
 
 /* Make the masthead heading the same height as the navigation */
 
 .header h3 {
-  margin-top: 0;
-  margin-bottom: 0;
-  line-height: 40px;
+    margin-top: 0;
+    margin-bottom: 0;
+    line-height: 40px;
 }
 
 
 /* Custom page footer */
 
 .footer {
-  padding-top: 19px;
-  color: #777;
-  border-top: 1px solid #e5e5e5;
-  text-align: center;
+    padding-top: 19px;
+    color: #777;
+    border-top: 1px solid #e5e5e5;
+    text-align: center;
 }
 
 
 /* Customize container */
 
 @media (min-width: 768px) {
-  .container {
-    max-width: 730px;
-    background-color: whitesmoke;
-  }
+    .container {
+        max-width: 1080px;
+        background-color: whitesmoke;
+    }
 }
 
 .container-narrow>hr {
-  margin: 30px 0;
+    margin: 30px 0;
 }
 
 
 /* Main marketing message and sign up button */
 
 .jumbotron {
-  text-align: center;
-  border-bottom: 1px solid #e5e5e5;
+    text-align: center;
+    border-bottom: 1px solid #e5e5e5;
 }
 
 .jumbotron .btn {
-  padding: 14px 24px;
-  font-size: 21px;
+    padding: 14px 24px;
+    font-size: 21px;
 }
+
 
 /* Supporting marketing content */
 
 .marketing {
-  margin: 40px 0;
+    margin: 40px 0;
 }
 
 .marketing p+h4 {
-  margin-top: 28px;
+    margin-top: 28px;
 }
 
 
 /* Responsive: Portrait tablets and up */
 
 @media screen and (min-width: 768px) {
-  /* Remove the padding we set earlier */
-  .header, .marketing, .footer {
-    padding-right: 0;
-    padding-left: 0;
-  }
-  /* Space out the masthead */
-  .header {
-    margin-bottom: 30px;
-  }
-  /* Remove the bottom border on the jumbotron for visual effect */
-  .jumbotron {
-    border-bottom: 0;
-  }
+    /* Remove the padding we set earlier */
+    .header, .marketing, .footer {
+        padding-right: 0;
+        padding-left: 0;
+    }
+    /* Space out the masthead */
+    .header {
+        margin-bottom: 30px;
+    }
+    /* Remove the bottom border on the jumbotron for visual effect */
+    .jumbotron {
+        border-bottom: 0;
+    }
 }
 
 .error {
-  color: red;
-  font-size: 14px;
+    color: red;
+    font-size: 14px;
 }
 
 .hide {
-  display: none;
+    display: none;
 }
 
 .float-left {
-  float: left;
+    float: left;
 }
 
 .ranks {
-  width: 30%;
-  margin-left: 6%;
+    width: 30%;
+    margin-left: 6%;
 }
 
 .row-width {
-  width: 100%;
+    width: 100%;
 }
 
 .post-list {
-  width: 60%;
+    width: 60%;
 }
 
-.post-title {
-  word-wrap: break-word;
-  word-break: normal;
+.post-title, .text-content {
+    display: block;
+    /*内联对象需加*/
+    width: 90%;
+    word-break: keep-all;
+    /* 不换行 */
+    white-space: nowrap;
+    /* 不换行 */
+    overflow: hidden;
+    /* 内容超出宽度时隐藏超出部分的内容 */
+    text-overflow: ellipsis;
+    /* 当对象内文本溢出时显示省略标记(...) ；需与overflow:hidden;一起使*/
 }
 
 .comments {
-  border: 1px solid gray;
+    border: 1px solid gray;
+}
+
+li>a .active {
+    background-color: #ddd;
+}
+
+.unread {
+    color: #E64330;
+}
+
+.message-note {
+    background-color: #E64330;
 }

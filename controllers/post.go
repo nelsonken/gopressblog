@@ -58,7 +58,7 @@ func (c *PostController) ListPosts(ctx gopress.Context) error {
 	}
 
 	if orderBy == "" {
-		orderBy = "created_at desc"
+		orderBy = defaultSortBy
 	}
 
 	limit := 10
@@ -68,14 +68,18 @@ func (c *PostController) ListPosts(ctx gopress.Context) error {
 		return ctx.Redirect(http.StatusFound, "/assets/404.html")
 	}
 
+	hotAuthorsID := []uint{}
+	c.db.ORM.Model(&models.Account{}).Order("today_income desc").Limit(10).Pluck("owner_id", &hotAuthorsID)
+	hotAuthors := []*models.User{}
+	c.db.ORM.Select("id, name").Where("id in (?)", hotAuthorsID).Find(&hotAuthors)
+
 	data := map[string]interface{}{
 		"headTitle":    c.title,
 		"avatar":       functions.GetAvatarURL(c.user.Avatar),
 		"posts":        pl.Posts,
 		"pagerContent": functions.GeneratePager(pl.Page, pl.Total, pl.Limit, pl.OrderBy, "/blog/posts", nil),
-		"getAuthorName": func(id uint) string {
-			return ""
-		},
+		"hotAuthors":   hotAuthors,
+		"getUserName":  c.getUserName,
 	}
 
 	return ctx.Render(http.StatusOK, "posts/list", data)
@@ -128,17 +132,19 @@ func (c *PostController) ViewPost(ctx gopress.Context) error {
 
 	comments := []*models.Comment{}
 	c.db.ORM.Model(post).Related(&comments)
-	//c.db.ORM.Where("post_id = ?", postID).Find(&comments)
 	author := new(models.User)
 	c.db.ORM.Model(post).Related(author, "author_id")
+	commentator := []uint{}
+	c.db.ORM.Model(&models.Comment{}).Where("post_id = ? ", post.ID).Pluck("Distinct(author_id)", &commentator)
 	data := map[string]interface{}{
-		"headTitle": c.title,
-		"post":      post,
-		"comments":  comments,
-		"avatar":    functions.GetAvatarURL(c.user.Avatar),
-		"author":    author,
+		"headTitle":   c.title,
+		"post":        post,
+		"comments":    comments,
+		"avatar":      functions.GetAvatarURL(c.user.Avatar),
+		"author":      author,
+		"commentator": commentator,
+		"getUserName": c.getUserName,
 	}
-	post.CreatedAt.Format("")
 
 	return ctx.Render(http.StatusOK, "posts/detail", data)
 }
@@ -201,7 +207,7 @@ func (c *PostController) MyPosts(ctx gopress.Context) error {
 	}
 
 	if orderBy == "" {
-		orderBy = "created_at desc"
+		orderBy = defaultSortBy
 	}
 
 	limit := 10
@@ -216,10 +222,14 @@ func (c *PostController) MyPosts(ctx gopress.Context) error {
 		"avatar":       functions.GetAvatarURL(c.user.Avatar),
 		"posts":        pl.Posts,
 		"pagerContent": functions.GeneratePager(pl.Page, pl.Total, pl.Limit, pl.OrderBy, "/blog/posts", nil),
-		"getAuthorName": func(id uint) string {
-			return ""
-		},
+		"getUserName":  c.getUserName,
 	}
 
 	return ctx.Render(http.StatusOK, "posts/myposts", data)
+}
+
+func (c *PostController) getUserName(uID uint) string {
+	u := &models.User{}
+	c.db.ORM.Select("name").First(u, uID)
+	return u.Name
 }

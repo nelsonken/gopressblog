@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"net/http"
+	"strconv"
 	"time"
 )
 
@@ -19,13 +20,13 @@ func GetAvatarURL(img string) string {
 // GeneratePager GeneratePager
 func GeneratePager(page, total, limit int, sortBy, URL string, filter map[string]interface{}) string {
 	var pagerTotal int
-	var pagerCount = 8
+	var showCount = 8
 	var prevPage = "上一页"
 	var nextPage = "下一页"
 	if total == 0 || limit == 0 || total <= limit {
 		return ""
 	}
-	if total%page == 0 {
+	if total%limit == 0 {
 		pagerTotal = total / limit
 	} else {
 		pagerTotal = total/limit + 1
@@ -54,22 +55,58 @@ func GeneratePager(page, total, limit int, sortBy, URL string, filter map[string
 		buf.WriteString(prevPage)
 		buf.WriteString(`</a></li>`)
 	}
-
-	if pagerTotal <= pagerCount {
-		pagerCount = pagerTotal
+	if pagerTotal < showCount {
+		showCount = pagerTotal
 	}
 	var href string
-	for i := 0; i < pagerCount; i++ {
+	var pageFlag int
+	if showCount%2 == 0 {
+		pageFlag = showCount / 2
+	} else {
+		pageFlag = showCount/2 + 1
+	}
+	//当前页之前的页码
+	for i := pageFlag; i > 0; i-- {
+		if page-i < 1 {
+			continue
+		}
+		fmt.Println(i, page-i)
+		href = fmt.Sprintf("%s?page=%d&sort=%s%s", URL, page-i, sortBy, filterStr.String())
+
+		buf.WriteString(`<li><a href="`)
+		buf.WriteString(href)
+		buf.WriteString(`">`)
+
+		pageName := page - i
+		buf.WriteString(strconv.Itoa(pageName))
+		buf.WriteString(`</a></li>`)
+	}
+
+	// 当前页码
+	href = fmt.Sprintf("%s?page=%d&sort=%s%s", URL, page, sortBy, filterStr.String())
+	buf.WriteString(`<li><a style="background-color:#ddd;" href="`)
+	buf.WriteString(href)
+	buf.WriteString(`">`)
+	buf.WriteString(strconv.Itoa(page))
+	buf.WriteString(`</a></li>`)
+
+	// 当前页码之后的页码
+	for i := 1; ; i++ {
+		if page+i > showCount || i > pageFlag {
+			break
+		}
 		href = fmt.Sprintf("%s?page=%d&sort=%s%s", URL, page+i, sortBy, filterStr.String())
 
 		buf.WriteString(`<li><a href="`)
 		buf.WriteString(href)
 		buf.WriteString(`">`)
-		buf.WriteString(prevPage)
+
+		pageName := page + i
+		buf.WriteString(strconv.Itoa(pageName))
 		buf.WriteString(`</a></li>`)
 	}
 
-	if page+1 < pagerTotal {
+	if page+1 <= pagerTotal {
 		nextHref := fmt.Sprintf("%s?page=%d&sort=%s%s", URL, page+1, sortBy, filterStr.String())
 		buf.WriteString(`<li><a href="`)
 		buf.WriteString(nextHref)
