@@ -41,15 +41,17 @@ func main() {
 		gopress.NewLoggingMiddleware("global", gopress.NewLogger()),
 	)
 
+	// RouteGroups route groups
+	needLoginMiddlewares := []gopress.MiddlewareFunc{middlewares.NewAuthMiddleware(us.User)}
+
+	authGroup := s.App().Group("/blog", needLoginMiddlewares...)
 	//init and register controllers
 	s.RegisterControllers(
 		controllers.NewIndexController(),
 		controllers.NewUserController(),
-		controllers.NewPostController(),
-		controllers.NewCommentController(),
+		controllers.NewPostController(authGroup),
+		controllers.NewCommentController(authGroup),
 	)
-
-	s.App().Group("/blog").Use(middlewares.NewAuthMiddleware(us.User))
 
 	// static path
 	s.App().Static("/assets", "assets")

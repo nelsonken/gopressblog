@@ -10,6 +10,6 @@ database:
   charset: "utf8"
   parsetime: "True"
 
-scores:
+score:
   post: 8
   comment: 1

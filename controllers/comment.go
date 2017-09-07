@@ -8,6 +8,7 @@ import (
 	"strconv"
 
 	"github.com/fpay/gopress"
+	"github.com/labstack/echo"
 )
 
 // CommentController comment action
@@ -15,12 +16,15 @@ type CommentController struct {
 	db     *services.DBService
 	user   *models.User
 	scRule *services.ScoreRule
+	group  *echo.Group
 }
 
 // NewCommentController returns comment controller instance.
-func NewCommentController() *CommentController {
+func NewCommentController(group *echo.Group) *CommentController {
+	c := new(CommentController)
+	c.group = group
 
-	return new(CommentController)
+	return c
 }
 
 // RegisterRoutes registes routes to app
@@ -29,7 +33,7 @@ func (c *CommentController) RegisterRoutes(app *gopress.App) {
 	c.db = app.Services.Get(services.DBServerName).(*services.DBService)
 	c.user = app.Services.Get(services.UserServiceName).(*services.UserService).User
 	c.scRule = app.Services.Get(services.ScoreServiceName).(*services.ScoreService).Rule
-	app.POST("/blog/comments/create", c.create)
+	c.group.POST("/comments/create", c.create)
 }
 
 // create Action

@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/fpay/gopress"
+	"github.com/labstack/echo"
 
 	"blog/functions"
 	"blog/models"
@@ -18,11 +19,23 @@ type PostController struct {
 	title  string
 	user   *models.User
 	scRule *services.ScoreService
+	group  *echo.Group
 }
 
 // NewPostController returns post controller instance.
-func NewPostController() *PostController {
-	return new(PostController)
+func NewPostController(group *echo.Group) *PostController {
+	c := new(PostController)
+	c.group = group
+
+	group.GET("/posts", c.ListPosts)
+	group.GET("/posts/create", c.CreatePage)
+	group.GET("/posts/update/:id", c.UpdatePage)
+	group.POST("/posts/update", c.UpdatePost)
+	group.GET("/posts/:id", c.ViewPost)
+	group.POST("/posts/create", c.CreatePost)
+	group.GET("/myposts", c.MyPosts)
+
+	return c
 }
 
 // RegisterRoutes registes routes to app
@@ -31,16 +44,7 @@ func (c *PostController) RegisterRoutes(app *gopress.App) {
 	c.db = app.Services.Get(services.DBServerName).(*services.DBService)
 	c.user = app.Services.Get(services.UserServiceName).(*services.UserService).User
 	c.scRule = app.Services.Get(services.ScoreServiceName).(*services.ScoreService)
-
 	c.title = "BLOG-Article"
-	app.GET("/blog/posts", c.ListPosts)
-	app.GET("/blog/posts/create", c.CreatePage)
-	app.GET("/blog/posts/update/:id", c.UpdatePage)
-	app.POST("/blog/posts/update", c.UpdatePost)
-	app.GET("/blog/posts/:id", c.ViewPost)
-	app.POST("/blog/posts/create", c.CreatePost)
-	app.GET("/blog/myposts", c.MyPosts)
-
 }
 
 // ListPosts Action

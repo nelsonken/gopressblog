@@ -1,5 +1,5 @@
-hash: e39e5fb1262134ae62e428340e59cba0bcec50f24514b1fedfc5ea66c3aaa01e
-updated: 2017-09-05T14:42:39.415585411+08:00
+hash: 15719455892a9c76483b4500ca420989c313a932492540abeec43343394ab0a9
+updated: 2017-09-07T12:23:33.71632237+08:00
 imports:
 - name: github.com/aymerick/raymond
   version: a2232af10b53ef1ae5a767f5178db3a6c1dab655
@@ -8,7 +8,7 @@ imports:
   - lexer
   - parser
 - name: github.com/fpay/gopress
-  version: 0a3ee1018125529bd480ccfc378989cff6b91867
+  version: 7d5bf4fbcf64c6b9f30e95664e9e031b43448b3f
 - name: github.com/go-playground/locales
   version: 1e5f1161c6416a5ff48840eb8724a394e48cc534
   subpackages:
@@ -36,6 +36,10 @@ imports:
   version: fc9e8d8ef48496124e79ae0df75490096eccf6fe
 - name: github.com/sirupsen/logrus
   version: f006c2ac4710855cf0f916dd6b77acf6b048dc6e
+- name: github.com/spf13/cobra
+  version: b78744579491c1ceeaaa3b40205e56b0591b93a3
+  subpackages:
+  - cobra
 - name: github.com/valyala/bytebufferpool
   version: e746df99fe4a3986f4d4f79e13c1e0117ce9c2f7
 - name: github.com/valyala/fasttemplate
@@ -49,12 +53,12 @@ imports:
   - blowfish
   - ssh/terminal
 - name: golang.org/x/sys
-  version: 7ddbeae9ae08c6a06a59597f0c9edbc5ff2444ce
+  version: 9aade4d3a3b7e6d876cd3823ad20ec45fc035402
   subpackages:
   - unix
   - windows
 - name: gopkg.in/go-playground/validator.v9
-  version: d529ee1b0f30352444f507cc6cdac96bfd12decc
+  version: a021b2ec9a8a8bb970f3f15bc42617cb520e8a64
 - name: gopkg.in/yaml.v2
   version: eb3733d160e74a9c7e442f435eb3bea458e1d19f
 testImports: []

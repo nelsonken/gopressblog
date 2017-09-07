@@ -3,10 +3,11 @@ package middlewares
 import (
 	"blog/models"
 	"blog/services"
-	"github.com/fpay/gopress"
 	"net/http"
 	"strconv"
 	"time"
+
+	"github.com/fpay/gopress"
 )
 
 // NewAuthMiddleware returns auth middleware.
@@ -14,7 +15,6 @@ import (
 func NewAuthMiddleware(user *models.User) gopress.MiddlewareFunc {
 	return func(next gopress.HandlerFunc) gopress.HandlerFunc {
 		return func(c gopress.Context) error {
-			panic("hello")
 			cookie, err := c.Cookie("uid")
 			if err != nil {
 				return c.Redirect(http.StatusFound, "/login")
