@@ -1,0 +1,32 @@
+{{> top }}
+{{> header }}
+{{> nav }}
+<div class="row marketing">
+    <div class="col-lg-10 col-lg-offset-1">
+        <div>
+            <h2>我的信息</h2>
+        </div>
+            <div class="panel">
+                <div class="panel-body">
+                    <div class="account-socre">
+                        <p class="total-sore">
+                            {{ account.total}}
+                        </p>
+                        <p class="today-income">
+                            {{ account.todayIncome }}
+                        </p>
+                    </div>
+                    <div class="my-profile">
+                            <p>
+                                {{user.name}}
+                            </p>
+                            <p>
+                                <img src="{{ functions.GetAvatarURL(user.avatar) }}" />
+                            </p>
+                    </div>
+                </div>
+            </div>
+    </div>
+</div>
+{{> footer }}
+{{> bottom }}

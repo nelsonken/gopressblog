@@ -4,7 +4,6 @@ import (
 	"blog/config"
 	"blog/controllers"
 	"blog/middlewares"
-	"blog/models"
 	"blog/services"
 
 	"github.com/fpay/gopress"
@@ -31,10 +30,8 @@ func main() {
 	// services register
 	dbs := services.NewDBService(opts.Database.DBType, opts.Database)
 	vs := services.NewValidatorService()
-	us := services.NewUserService()
-	us.User = &models.User{}
 	score := services.NewScoreService(opts.ScoreRule)
-	s.RegisterServices(dbs, vs, us, score)
+	s.RegisterServices(dbs, vs, score)
 
 	// register middlewares
 	s.RegisterGlobalMiddlewares(
@@ -42,7 +39,7 @@ func main() {
 	)
 
 	// RouteGroups route groups
-	needLoginMiddlewares := []gopress.MiddlewareFunc{middlewares.NewAuthMiddleware(us.User)}
+	needLoginMiddlewares := []gopress.MiddlewareFunc{middlewares.NewAuthMiddleware()}
 
 	authGroup := s.App().Group("/blog", needLoginMiddlewares...)
 	//init and register controllers

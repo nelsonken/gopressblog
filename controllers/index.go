@@ -3,18 +3,17 @@ package controllers
 import (
 	"net/http"
 
-	"blog/models"
 	"blog/services"
+
 	"github.com/fpay/gopress"
 )
 
 // IndexController action pointer
 type IndexController struct {
 	// Uncomment this line if you want to use services in the app
-	app         *gopress.App
-	db          *services.DBService
-	currentUser *models.User
-	title       string
+	app   *gopress.App
+	db    *services.DBService
+	title string
 }
 
 // NewIndexController returns index controller instance.
@@ -30,7 +29,6 @@ func (c *IndexController) RegisterRoutes(app *gopress.App) {
 	c.db = app.Services.Get(services.DBServerName).(*services.DBService)
 	c.app = app
 	c.title = "首页"
-	c.currentUser = app.Services.Get(services.UserServiceName).(*services.UserService).User
 	app.GET("/", c.Home)
 }
 

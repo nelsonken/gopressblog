@@ -14,7 +14,6 @@ import (
 // CommentController comment action
 type CommentController struct {
 	db     *services.DBService
-	user   *models.User
 	scRule *services.ScoreRule
 	group  *echo.Group
 }
@@ -32,7 +31,6 @@ func NewCommentController(group *echo.Group) *CommentController {
 // It is used to implements gopress.Controller.
 func (c *CommentController) RegisterRoutes(app *gopress.App) {
 	c.db = app.Services.Get(services.DBServerName).(*services.DBService)
-	c.user = app.Services.Get(services.UserServiceName).(*services.UserService).User
 	c.scRule = app.Services.Get(services.ScoreServiceName).(*services.ScoreService).Rule
 }
 
@@ -46,7 +44,7 @@ func (c *CommentController) create(ctx gopress.Context) error {
 
 	content := ctx.FormValue("content")
 	comment := &models.Comment{}
-	err := comment.CommentPost(c.db.ORM, uint(postID), c.user.ID, uint(mentionID), content, c.scRule.Comment)
+	err := comment.CommentPost(c.db.ORM, uint(postID), getUser(ctx).ID, uint(mentionID), content, c.scRule.Comment)
 	if err != nil {
 		return ctx.Redirect(http.StatusFound, "/blog/posts/"+postIDStr+"?message=保存失败")
 	}

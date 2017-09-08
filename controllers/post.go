@@ -17,7 +17,6 @@ import (
 type PostController struct {
 	db     *services.DBService
 	title  string
-	user   *models.User
 	scRule *services.ScoreService
 	group  *echo.Group
 }
@@ -42,7 +41,6 @@ func NewPostController(group *echo.Group) *PostController {
 // It is used to implements gopress.Controller.
 func (c *PostController) RegisterRoutes(app *gopress.App) {
 	c.db = app.Services.Get(services.DBServerName).(*services.DBService)
-	c.user = app.Services.Get(services.UserServiceName).(*services.UserService).User
 	c.scRule = app.Services.Get(services.ScoreServiceName).(*services.ScoreService)
 	c.title = "BLOG-Article"
 }
@@ -77,7 +75,7 @@ func (c *PostController) ListPosts(ctx gopress.Context) error {
 		"headTitle":    c.title,
 		"haveMessage":  ctx.Get("haveMessage"),
 		"messageNum":   ctx.Get("messageNum"),
-		"avatar":       functions.GetAvatarURL(c.user.Avatar),
+		"avatar":       functions.GetAvatarURL(getUser(ctx).Avatar),
 		"posts":        pl.Posts,
 		"pagerContent": functions.GeneratePager(pl.Page, pl.Total, pl.Limit, pl.OrderBy, "/blog/posts", nil),
 		"hotAuthors":   hotAuthors,
@@ -91,7 +89,7 @@ func (c *PostController) ListPosts(ctx gopress.Context) error {
 func (c *PostController) CreatePage(ctx gopress.Context) error {
 	data := map[string]interface{}{
 		"headTitle":   c.title,
-		"avatar":      functions.GetAvatarURL(c.user.Avatar),
+		"avatar":      functions.GetAvatarURL(getUser(ctx).Avatar),
 		"haveMessage": ctx.Get("haveMessage"),
 		"messageNum":  ctx.Get("messageNum"),
 		"message":     ctx.QueryParam("message"),
@@ -112,7 +110,7 @@ func (c *PostController) CreatePost(ctx gopress.Context) error {
 	}
 
 	post := &models.Post{}
-	err := post.CreatePost(c.db.ORM, c.user.ID, title, content, c.scRule.Rule.Post)
+	err := post.CreatePost(c.db.ORM, getUser(ctx).ID, title, content, c.scRule.Rule.Post)
 	if err != nil {
 		return ctx.Redirect(http.StatusFound, "/blog/posts/create?message="+err.Error())
 	}
@@ -146,7 +144,7 @@ func (c *PostController) ViewPost(ctx gopress.Context) error {
 		"comments":    comments,
 		"haveMessage": ctx.Get("haveMessage"),
 		"messageNum":  ctx.Get("messageNum"),
-		"avatar":      functions.GetAvatarURL(c.user.Avatar),
+		"avatar":      functions.GetAvatarURL(getUser(ctx).Avatar),
 		"author":      author,
 		"commentator": commentator,
 		"getUserName": c.getUserName,
@@ -195,7 +193,7 @@ func (c *PostController) UpdatePage(ctx gopress.Context) error {
 
 	data := map[string]interface{}{
 		"headTitle":   c.title,
-		"avatar":      functions.GetAvatarURL(c.user.Avatar),
+		"avatar":      functions.GetAvatarURL(getUser(ctx).Avatar),
 		"message":     ctx.QueryParam("message"),
 		"haveMessage": ctx.Get("haveMessage"),
 		"messageNum":  ctx.Get("messageNum"),
@@ -220,7 +218,7 @@ func (c *PostController) MyPosts(ctx gopress.Context) error {
 
 	limit := 10
 	p := &models.Post{}
-	pl, err := p.MyPosts(c.db.ORM, pageIndex, limit, orderBy, c.user.ID)
+	pl, err := p.MyPosts(c.db.ORM, pageIndex, limit, orderBy, getUser(ctx).ID)
 	if err != nil {
 		return ctx.Redirect(http.StatusFound, "/assets/404.html")
 	}
@@ -229,7 +227,7 @@ func (c *PostController) MyPosts(ctx gopress.Context) error {
 		"headTitle":    c.title,
 		"haveMessage":  ctx.Get("haveMessage"),
 		"messageNum":   ctx.Get("messageNum"),
-		"avatar":       functions.GetAvatarURL(c.user.Avatar),
+		"avatar":       functions.GetAvatarURL(getUser(ctx).Avatar),
 		"posts":        pl.Posts,
 		"pagerContent": functions.GeneratePager(pl.Page, pl.Total, pl.Limit, pl.OrderBy, "/blog/posts", nil),
 		"getUserName":  c.getUserName,

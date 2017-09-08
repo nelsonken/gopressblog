@@ -13,17 +13,17 @@ import (
 
 // NewAuthMiddleware returns auth middleware.
 // check cookies
-func NewAuthMiddleware(user *models.User) gopress.MiddlewareFunc {
+func NewAuthMiddleware() gopress.MiddlewareFunc {
 	return func(next gopress.HandlerFunc) gopress.HandlerFunc {
 		return func(c gopress.Context) error {
 			cookie, err := c.Cookie("uid")
 			if err != nil {
-				return c.Redirect(http.StatusFound, "/login")
+				return c.Redirect(http.StatusFound, "/login?cookie=err")
 			}
 
 			if cookie.Value == "" {
 				dropCookie(c, cookie)
-				return c.Redirect(http.StatusFound, "/login")
+				return c.Redirect(http.StatusFound, "/login?cookie=nil")
 			}
 
 			container := gopress.AppFromContext(c).Services
@@ -32,17 +32,18 @@ func NewAuthMiddleware(user *models.User) gopress.MiddlewareFunc {
 			uid, err := strconv.Atoi(cookie.Value)
 			if err != nil {
 				dropCookie(c, cookie)
-				return c.Redirect(http.StatusFound, "/login")
+				return c.Redirect(http.StatusFound, "/login?cookie=invalid")
 			}
+			user := &models.User{}
 			if dbs.ORM.First(user, uid).RecordNotFound() {
 				dropCookie(c, cookie)
-				return c.Redirect(http.StatusFound, "/login")
+				return c.Redirect(http.StatusFound, "/login?cookie=nosuchuser")
 			}
-			us := services.NewUserService()
-			us.User = user
-			messageNum := getMessageNum(dbs.ORM, us.User.ID)
+
+			messageNum := getMessageNum(dbs.ORM, user.ID)
 			c.Set("messageNum", messageNum)
 			c.Set("haveMessage", messageNum > 0)
+			c.Set("user", user)
 
 			return next(c)
 		}

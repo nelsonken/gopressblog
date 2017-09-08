@@ -2,9 +2,9 @@ package services
 
 import (
 	"blog/models"
-	"github.com/fpay/gopress"
-	"net/http"
 	"strconv"
+
+	"github.com/fpay/gopress"
 )
 
 const (
@@ -34,26 +34,16 @@ func (s *UserService) RegisterContainer(c *gopress.Container) {
 	// s.c = c
 }
 
-func (s *UserService) GetCurrentUser(c gopress.Context) error {
-	cookie, err := c.Cookie("uid")
-	if err != nil {
-		return c.Redirect(http.StatusFound, "/login")
-	}
-
+// GetCurrentUser get current user
+func (s *UserService) GetCurrentUser(c gopress.Context) {
+	s.User = &models.User{}
+	cookie, _ := c.Cookie("uid")
 	if cookie.Value == "" {
-		return c.Redirect(http.StatusFound, "/login")
+		return
 	}
-
 	container := gopress.AppFromContext(c).Services
-
 	dbs := container.Get(DBServerName).(*DBService)
-	uid, err := strconv.Atoi(cookie.Value)
-	if err != nil {
-		return c.Redirect(http.StatusFound, "/login")
-	}
-	if dbs.ORM.First(s.User, uid).RecordNotFound() {
-		return c.Redirect(http.StatusFound, "/login")
-	}
+	uid, _ := strconv.Atoi(cookie.Value)
 
-	return nil
+	dbs.ORM.First(s.User, uid)
 }
