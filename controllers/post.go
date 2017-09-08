@@ -75,6 +75,8 @@ func (c *PostController) ListPosts(ctx gopress.Context) error {
 
 	data := map[string]interface{}{
 		"headTitle":    c.title,
+		"haveMessage":  ctx.Get("haveMessage"),
+		"messageNum":   ctx.Get("messageNum"),
 		"avatar":       functions.GetAvatarURL(c.user.Avatar),
 		"posts":        pl.Posts,
 		"pagerContent": functions.GeneratePager(pl.Page, pl.Total, pl.Limit, pl.OrderBy, "/blog/posts", nil),
@@ -88,9 +90,11 @@ func (c *PostController) ListPosts(ctx gopress.Context) error {
 // CreatePage show create page
 func (c *PostController) CreatePage(ctx gopress.Context) error {
 	data := map[string]interface{}{
-		"headTitle": c.title,
-		"avatar":    functions.GetAvatarURL(c.user.Avatar),
-		"message":   ctx.QueryParam("message"),
+		"headTitle":   c.title,
+		"avatar":      functions.GetAvatarURL(c.user.Avatar),
+		"haveMessage": ctx.Get("haveMessage"),
+		"messageNum":  ctx.Get("messageNum"),
+		"message":     ctx.QueryParam("message"),
 	}
 
 	return ctx.Render(http.StatusOK, "posts/create", data)
@@ -140,6 +144,8 @@ func (c *PostController) ViewPost(ctx gopress.Context) error {
 		"headTitle":   c.title,
 		"post":        post,
 		"comments":    comments,
+		"haveMessage": ctx.Get("haveMessage"),
+		"messageNum":  ctx.Get("messageNum"),
 		"avatar":      functions.GetAvatarURL(c.user.Avatar),
 		"author":      author,
 		"commentator": commentator,
@@ -188,10 +194,12 @@ func (c *PostController) UpdatePage(ctx gopress.Context) error {
 	}
 
 	data := map[string]interface{}{
-		"headTitle": c.title,
-		"avatar":    functions.GetAvatarURL(c.user.Avatar),
-		"message":   ctx.QueryParam("message"),
-		"post":      post,
+		"headTitle":   c.title,
+		"avatar":      functions.GetAvatarURL(c.user.Avatar),
+		"message":     ctx.QueryParam("message"),
+		"haveMessage": ctx.Get("haveMessage"),
+		"messageNum":  ctx.Get("messageNum"),
+		"post":        post,
 	}
 
 	return ctx.Render(http.StatusOK, "posts/update", data)
@@ -219,6 +227,8 @@ func (c *PostController) MyPosts(ctx gopress.Context) error {
 
 	data := map[string]interface{}{
 		"headTitle":    c.title,
+		"haveMessage":  ctx.Get("haveMessage"),
+		"messageNum":   ctx.Get("messageNum"),
 		"avatar":       functions.GetAvatarURL(c.user.Avatar),
 		"posts":        pl.Posts,
 		"pagerContent": functions.GeneratePager(pl.Page, pl.Total, pl.Limit, pl.OrderBy, "/blog/posts", nil),

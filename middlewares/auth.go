@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/fpay/gopress"
+	"github.com/jinzhu/gorm"
 )
 
 // NewAuthMiddleware returns auth middleware.
@@ -39,6 +40,10 @@ func NewAuthMiddleware(user *models.User) gopress.MiddlewareFunc {
 			}
 			us := services.NewUserService()
 			us.User = user
+			messageNum := getMessageNum(dbs.ORM, us.User.ID)
+			c.Set("messageNum", messageNum)
+			c.Set("haveMessage", messageNum > 0)
+
 			return next(c)
 		}
 	}
@@ -47,4 +52,11 @@ func NewAuthMiddleware(user *models.User) gopress.MiddlewareFunc {
 func dropCookie(c gopress.Context, cookie *http.Cookie) {
 	cookie.Expires = time.Now().Add(-1 * time.Second)
 	c.SetCookie(cookie)
+}
+
+// getMessageNum
+func getMessageNum(orm *gorm.DB, userID uint) int {
+	var messageNum int
+	orm.Model(&models.Message{}).Where("to_user_id = ? and readed = 0", userID).Count(&messageNum)
+	return messageNum
 }

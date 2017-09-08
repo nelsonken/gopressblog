@@ -7,10 +7,9 @@
             <h2>系统消息</h2>
         </div>
             <div class="panel">
-
                 <div class="panel-body">
                     <div class="panel-heading">
-                        <a class="btn btn-primary" onclick="javascript:function(){window.location.href='/blog/messages/readall'}">全部已读</a>
+                        <a class="btn btn-primary" onclick="window.location.href='/blog/messages/readall?sign={{ sign }}';">全部已读</a>
                     </div>
                     <ul>
                         {{#each msgs}}

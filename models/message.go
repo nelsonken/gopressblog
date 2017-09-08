@@ -60,8 +60,8 @@ func (m *Message) ReadMessage(orm *gorm.DB, msgID uint) error {
 }
 
 // ReadAll read all
-func (m *Message) ReadAll(orm *gorm.DB, userID uint) error {
-	return orm.Model(m).Where("to_user_id = ? AND readed = ?", userID, 0).UpdateColumn("readed", 1).Error
+func (m *Message) ReadAll(orm *gorm.DB, userID uint) int64 {
+	return orm.Model(Message{}).Where("to_user_id = ? AND readed = ?", userID, 0).Updates(map[string]interface{}{"readed": 1}).RowsAffected
 }
 
 // DeleteOne remove oneMessage

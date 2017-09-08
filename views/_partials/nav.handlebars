@@ -5,7 +5,7 @@
             <li role="presentation"><a href="/blog/posts">首页</a></li>
             <li role="presentation"><a href="/blog/posts/create">发文章</a></li>
             <li role="presentation"><a href="/blog/myposts">我的文章</a></li>
-            <li role="presentation"><a href="/blog/messages">消息<span class="badge message-note">21</span></a></li>
+            <li role="presentation"><a href="/blog/messages">消息<span {{#if haveMessage}}class="badge message-note"{{/if}}>{{messageNum}}</span></a></li>
             <li role="presentation"><a href="/logout">退出登录</a></li>
         </ul>
     </nav>

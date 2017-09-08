@@ -2,6 +2,8 @@ package functions
 
 import (
 	"bytes"
+	"crypto/md5"
+	"encoding/hex"
 	"fmt"
 	"net/http"
 	"strconv"
@@ -133,4 +135,13 @@ func GetFlashCookie(name, value string) *http.Cookie {
 func SetCookieExpired(cookie *http.Cookie) *http.Cookie {
 	cookie.Expires = time.Now().Add(time.Second * -5)
 	return cookie
+}
+
+// GetMD5 get md5 encode str
+func GetMD5(str string) string {
+	encoder := md5.New()
+	encoder.Write([]byte(str))
+	b := encoder.Sum(nil)
+
+	return hex.EncodeToString(b)
 }
