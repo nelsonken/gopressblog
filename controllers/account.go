@@ -5,7 +5,9 @@ import (
 	"blog/models"
 	"blog/services"
 	"fmt"
+	"io"
 	"net/http"
+	"os"
 	"strconv"
 
 	"github.com/fpay/gopress"
@@ -27,6 +29,7 @@ func NewAccountController(group *echo.Group) *AccountController {
 	group.GET("/messages", c.ListMessages)
 	group.GET("/messages/readall", c.ReadAllMessage)
 	group.GET("/account/profile", c.MyAccount).Name = "profile"
+	group.POST("/account/avatar", c.UploadAvatar)
 	c.title = "消息"
 	return c
 }
@@ -111,7 +114,38 @@ func (c *AccountController) MyAccount(ctx gopress.Context) error {
 		"messageNum":  ctx.Get("messageNum"),
 		"account":     account,
 		"user":        getUser(ctx),
+		"message":     ctx.QueryParam("message"),
 	}
 
 	return ctx.Render(http.StatusOK, "account/profile", data)
+}
+
+// UploadAvatar upload avatar
+func (c *AccountController) UploadAvatar(ctx gopress.Context) error {
+	avatarHead, err := ctx.FormFile("avatar")
+	if err != nil {
+		return ctx.Redirect(http.StatusFound, "/blog/account/profile?message=上传文件格式不正确")
+	}
+
+	fileName := fmt.Sprintf("assets/image/avatar/%s", avatarHead.Filename)
+	fdSrc, err := avatarHead.Open()
+	if err != nil {
+		return ctx.Redirect(http.StatusFound, "/blog/account/profile?message=打开文件失败")
+	}
+	defer fdSrc.Close()
+
+	fdDst, err := os.OpenFile(fileName, os.O_CREATE|os.O_WRONLY, 0666)
+	if err != nil {
+		return ctx.Redirect(http.StatusFound, "/blog/account/profile?message=保存文件失败"+fileName+err.Error())
+	}
+	defer fdDst.Close()
+
+	io.Copy(fdDst, fdSrc)
+
+	user := getUser(ctx)
+	if c.orm.Model(user).Update("avatar", avatarHead.Filename).RowsAffected < 1 {
+		return ctx.Redirect(http.StatusFound, "/blog/account/profile?message=保存文件失败-d")
+	}
+
+	return ctx.Redirect(http.StatusFound, "/blog/account/profile")
 }

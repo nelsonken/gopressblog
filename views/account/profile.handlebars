@@ -1,32 +1,49 @@
-{{> top }}
-{{> header }}
-{{> nav }}
+{{> top }} {{> header }} {{> nav }}
 <div class="row marketing">
     <div class="col-lg-10 col-lg-offset-1">
         <div>
             <h2>我的信息</h2>
         </div>
-            <div class="panel">
-                <div class="panel-body">
-                    <div class="account-socre">
-                        <p class="total-sore">
-                            {{ account.total}}
-                        </p>
-                        <p class="today-income">
-                            {{ account.todayIncome }}
-                        </p>
+        <div class="panel">
+            <div class="panel-body">
+                <div class="account-socre well">
+                    <div class="total-sore">
+                        我的积分:&nbsp;{{ account.total}}
                     </div>
-                    <div class="my-profile">
-                            <p>
-                                {{user.name}}
-                            </p>
-                            <p>
-                                <img src="{{ functions.GetAvatarURL(user.avatar) }}" />
-                            </p>
+                    <div class="today-income">
+                        今日积分:&nbsp;{{ account.todayIncome }}
+                    </div>
+                    <div>
+                        我的账号:&nbsp;{{user.name}}
+                    </div>
+                </div>
+                <div class="my-profile">
+                    <div class="row">
+                        <div class="col-lg-4 float-left">
+                        头像:&nbsp;<img src="{{ avatar }}" />
+                        </div>
+                        <div class="col-lg-4 col-lg-offset-2 float-left">
+                        <form class="form" enctype="multipart/form-data" method="post" action="/blog/account/avatar">
+                            <div class="form-group">
+                                <legend>
+                                <label class="form-label">修改头像</label>
+                                </legend>
+                                <fieldset>
+                                <input class="form-control" width="40%" type="file" name="avatar" />
+                                </fieldset>
+                            </div>
+                            <div class="form-group">
+                                <span class="error">
+                                {{ message }}
+                                </span>
+                                <input class="btn btn-primary" type="submit" value="提交" />
+                            </div>
+                        </form>
+                        </div>
                     </div>
                 </div>
             </div>
+        </div>
     </div>
 </div>
-{{> footer }}
-{{> bottom }}
+{{> footer }} {{> bottom }}

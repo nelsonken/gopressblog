@@ -68,6 +68,7 @@ func (c *PostController) ListPosts(ctx gopress.Context) error {
 
 	hotAuthorsID := []uint{}
 	c.db.ORM.Model(&models.Account{}).Order("today_income desc").Limit(10).Pluck("owner_id", &hotAuthorsID)
+	fmt.Println(hotAuthorsID)
 	hotAuthors := []*models.User{}
 	c.db.ORM.Select("id, name").Where("id in (?)", hotAuthorsID).Find(&hotAuthors)
 
