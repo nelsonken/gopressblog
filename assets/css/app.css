@@ -153,3 +153,32 @@ li>a .active {
 .message-note {
     background-color: #E64330;
 }
+
+.comment-label {
+    position: relative;
+    display: inline-block;
+    background: #fff;
+    font-size: 14px;
+    margin-left: 35px
+}
+
+.comment-label a {
+    color: #060606;
+    display: inline-block;
+    padding: 3px 6px;
+    text-decoration: none
+}
+
+.label-arrow {
+    position: absolute;
+    border: 8px solid #f5f5f5;
+    height: 0;
+    line-height: 0;
+    font-size: 0;
+}
+
+.label-arrow-l {
+    top: 6px;
+    left: -16px;
+    border-right-color: #fff;
+}

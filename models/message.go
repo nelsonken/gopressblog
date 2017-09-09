@@ -31,13 +31,14 @@ type Message struct {
 // PutMessage put message to
 func (m *Message) PutMessage(orm *gorm.DB, from, to uint, title, content string, messageType uint) error {
 	m.FromUserID = from
+	m.ID = 0
 	m.ToUserID = to
 	m.Title = title
 	m.Content = content
 	m.MessageType = messageType
 	m.Readed = false
 
-	return orm.Save(m).Error
+	return orm.Create(m).Error
 }
 
 // ListMessages list some one's message, return total of the message

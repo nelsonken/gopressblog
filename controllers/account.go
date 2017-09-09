@@ -75,7 +75,7 @@ func (c *AccountController) ReadAllMessage(ctx gopress.Context) error {
 	sign := ctx.QueryParam("sign")
 	signature := functions.GetMD5(strconv.FormatUint(uint64(getUser(ctx).ID), 10) + getUser(ctx).Password)
 	if sign != signature {
-		return ctx.Redirect(http.StatusFound, "/assets/404.html")
+		return ctx.Redirect(http.StatusFound, notFoundURL)
 	}
 	m := &models.Message{}
 	fmt.Println(m.ReadAll(c.orm, getUser(ctx).ID))
@@ -104,7 +104,7 @@ func (c *AccountController) DeleteMessage(ctx gopress.Context) error {
 func (c *AccountController) MyAccount(ctx gopress.Context) error {
 	account := &models.Account{}
 	if c.orm.Where("owner_id = ?", getUser(ctx).ID).First(account).RecordNotFound() {
-		return ctx.Redirect(http.StatusFound, "/assets/404.html")
+		return ctx.Redirect(http.StatusFound, notFoundURL)
 	}
 
 	data := map[string]interface{}{

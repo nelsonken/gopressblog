@@ -46,24 +46,32 @@ func (c *Comment) CommentPost(orm *gorm.DB, postID, authorID, mentionUserID uint
 	}
 	ep := ta.Model(post).Update(&Post{CommentNumber: post.CommentNumber + 1}).Error
 
-	// 发送评论提醒
+	// 发送@提醒
 	var commenters []uint
 	msg := &Message{}
-	ta.Model(c).Pluck("author_id", &commenters)
+	ta.Model(c).Pluck("distinct(author_id)", &commenters)
 	for _, v := range commenters {
+		if mentionUserID == 0 || mentionUserID == c.AuthorID || mentionUserID == post.AuthorID {
+			break
+		}
 		if mentionUserID == v {
-			msgTitle := fmt.Sprintf("作者在文章《%s》中回复了了你的评论", post.Title)
+			user := &User{}
+			orm.Select("name").First(user, mentionUserID)
+			msgTitle := fmt.Sprintf("在文章《%s》中回复了你的评论", post.Title)
 			msg.PutMessage(ta, SystemUID, mentionUserID, msgTitle, content, MessageTypeSystem)
+			c.Content = fmt.Sprintf("<span href=\"javascript:void(0);\" style=\"color:#337ab7;\">@%s</span>%s", user.Name, c.Content)
 			break
 		}
 	}
 
 	// 提醒作者被评论
-	msgTitle := fmt.Sprintf("你的文章《%s》有一个新评论", post.Title)
-	msg.PutMessage(ta, SystemUID, post.AuthorID, msgTitle, content, MessageTypeSystem)
+	if post.AuthorID != c.AuthorID {
+		msgTitle := fmt.Sprintf("你的文章《%s》有一个新评论", post.Title)
+		msg.PutMessage(ta, SystemUID, post.AuthorID, msgTitle, content, MessageTypeSystem)
+	}
 
 	// 新建评论
-	if ta.Save(c).Error != nil || ea != nil || ep != nil {
+	if ta.Create(c).Error != nil || ea != nil || ep != nil {
 		ta.Rollback()
 		return DBError{"存储评论失败", DBWriteError, nil}
 	}

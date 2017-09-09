@@ -43,10 +43,13 @@ func (c *CommentController) create(ctx gopress.Context) error {
 	mentionID, _ := strconv.ParseUint(mentionIDStr, 10, 64)
 
 	content := ctx.FormValue("content")
+	if len(content) > 200 {
+		return ctx.Redirect(http.StatusFound, "/blog/posts/"+postIDStr+"?message=评论内容不能大于200个字符")
+	}
 	comment := &models.Comment{}
 	err := comment.CommentPost(c.db.ORM, uint(postID), getUser(ctx).ID, uint(mentionID), content, c.scRule.Comment)
 	if err != nil {
-		return ctx.Redirect(http.StatusFound, "/blog/posts/"+postIDStr+"?message=保存失败")
+		return ctx.Redirect(http.StatusFound, "/blog/posts/"+postIDStr+"?message=保存失败"+err.Error())
 	}
 
 	return ctx.Redirect(http.StatusFound, "/blog/posts/"+postIDStr)

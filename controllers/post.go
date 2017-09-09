@@ -66,18 +66,19 @@ func (c *PostController) ListPosts(ctx gopress.Context) error {
 	p := &models.Post{}
 	pl, err := p.ListPosts(c.db.ORM, pageIndex, limit, orderBy)
 	if err != nil {
-		return ctx.Redirect(http.StatusFound, "/assets/404.html")
+		return ctx.Redirect(http.StatusFound, notFoundURL)
 	}
 
 	data := map[string]interface{}{
-		"headTitle":    c.title,
-		"haveMessage":  ctx.Get("haveMessage"),
-		"messageNum":   ctx.Get("messageNum"),
-		"avatar":       functions.GetAvatarURL(getUser(ctx).Avatar),
-		"posts":        pl.Posts,
-		"pagerContent": functions.GeneratePager(pl.Page, pl.Total, pl.Limit, pl.OrderBy, "/blog/posts", nil),
-		"hotAuthors":   c.getHotAuthors(),
-		"getUserName":  c.getUserName,
+		"headTitle":        c.title,
+		"haveMessage":      ctx.Get("haveMessage"),
+		"messageNum":       ctx.Get("messageNum"),
+		"avatar":           functions.GetAvatarURL(getUser(ctx).Avatar),
+		"posts":            pl.Posts,
+		"pagerContent":     functions.GeneratePager(pl.Page, pl.Total, pl.Limit, pl.OrderBy, "/blog/posts", nil),
+		"hotAuthors":       c.getHotAuthors(),
+		"getUserName":      c.getUserName,
+		"getUserAvatarURL": c.getUserAvatarURL,
 	}
 
 	return ctx.Render(http.StatusOK, "posts/list", data)
@@ -130,30 +131,32 @@ func (c *PostController) ViewPost(ctx gopress.Context) error {
 	var postID uint64
 	postID, err := strconv.ParseUint(idStr, 10, 64)
 	if err != nil {
-		return ctx.Redirect(http.StatusFound, "/assets/404.html")
+		return ctx.Redirect(http.StatusFound, notFoundURL)
 	}
 
 	post := &models.Post{}
 	if c.db.ORM.First(post, postID).RecordNotFound() {
-		return ctx.Redirect(http.StatusFound, "/assets/404.html")
+		return ctx.Redirect(http.StatusFound, notFoundURL)
 	}
 
 	comments := []*models.Comment{}
-	c.db.ORM.Model(post).Related(&comments)
+	c.db.ORM.Model(post).Order("created_at desc").Related(&comments)
 	author := new(models.User)
 	c.db.ORM.Model(post).Related(author, "author_id")
 	commentator := []uint{}
 	c.db.ORM.Model(&models.Comment{}).Where("post_id = ? ", post.ID).Pluck("Distinct(author_id)", &commentator)
 	data := map[string]interface{}{
-		"headTitle":   c.title,
-		"post":        post,
-		"comments":    comments,
-		"haveMessage": ctx.Get("haveMessage"),
-		"messageNum":  ctx.Get("messageNum"),
-		"avatar":      functions.GetAvatarURL(getUser(ctx).Avatar),
-		"author":      author,
-		"commentator": commentator,
-		"getUserName": c.getUserName,
+		"headTitle":        c.title,
+		"post":             post,
+		"comments":         comments,
+		"haveMessage":      ctx.Get("haveMessage"),
+		"messageNum":       ctx.Get("messageNum"),
+		"avatar":           functions.GetAvatarURL(getUser(ctx).Avatar),
+		"author":           author,
+		"commentator":      commentator,
+		"getUserName":      c.getUserName,
+		"message":          ctx.QueryParam("message"),
+		"getUserAvatarURL": c.getUserAvatarURL,
 	}
 
 	return ctx.Render(http.StatusOK, "posts/detail", data)
@@ -194,7 +197,7 @@ func (c *PostController) UpdatePage(ctx gopress.Context) error {
 	postID, _ := strconv.ParseUint(postIDStr, 10, 64)
 	post := &models.Post{}
 	if c.db.ORM.First(post, postID).RecordNotFound() {
-		return ctx.Redirect(http.StatusFound, "/assets/404.html")
+		return ctx.Redirect(http.StatusFound, notFoundURL)
 	}
 
 	data := map[string]interface{}{
@@ -226,7 +229,7 @@ func (c *PostController) MyPosts(ctx gopress.Context) error {
 	p := &models.Post{}
 	pl, err := p.MyPosts(c.db.ORM, pageIndex, limit, orderBy, getUser(ctx).ID)
 	if err != nil {
-		return ctx.Redirect(http.StatusFound, "/assets/404.html")
+		return ctx.Redirect(http.StatusFound, notFoundURL)
 	}
 
 	data := map[string]interface{}{
@@ -275,4 +278,11 @@ func (c *PostController) SearchPost(ctx gopress.Context) error {
 	}
 
 	return ctx.Render(http.StatusOK, "posts/search", data)
+}
+
+func (c *PostController) getUserAvatarURL(uID uint) string {
+	u := &models.User{}
+	c.db.ORM.Select("avatar").First(u, uID)
+
+	return functions.GetAvatarURL(u.Avatar)
 }

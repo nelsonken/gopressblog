@@ -8,6 +8,7 @@ import (
 
 const (
 	defaultSortBy = "created_at desc"
+	notFoundURL   = "/assets/404.html"
 )
 
 func getUser(ctx gopress.Context) *models.User {

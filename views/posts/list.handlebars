@@ -9,7 +9,7 @@
             <div class="col-lg-6 float-left post-list">
                 <dl class="dl">
                     {{#each posts}}
-                    <dt><a href="/blog/posts/{{ ID }}" class="post-title">{{ title }}</a></dt>
+                    <dt><a href="/blog/posts/{{ ID }}" class="post-title"><img width="24" height="24" src="{{ getUserAvatarURL(authorID) }}"/>&nbsp;{{ title }}</a></dt>
                     <dd>{{ createdAt }} - {{ getUserName(authorID) }}</dd>
                     <br/> {{/each}}
                     <dt>{{{ pagerContent }}}</dt>
