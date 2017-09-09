@@ -145,3 +145,27 @@ func GetMD5(str string) string {
 
 	return hex.EncodeToString(b)
 }
+
+// GetFriendlyTime get friendly time format
+func GetFriendlyTime(t time.Time) string {
+	d := time.Now().Sub(t)
+	h := d.Hours()
+	m := d.Minutes()
+	if h > 24*365 {
+		return t.Format("2006-01-02 15:04:05")
+	}
+
+	if h > 24 {
+		return fmt.Sprintf("%d 天前", int(h/24))
+	}
+
+	if h > 0 && h < 24 {
+		return fmt.Sprintf("%d 小时前", int(h))
+	}
+
+	if m > 0 {
+		return fmt.Sprintf("%d 分钟前", int(m))
+	}
+
+	return "刚刚"
+}

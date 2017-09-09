@@ -79,6 +79,7 @@ func (c *PostController) ListPosts(ctx gopress.Context) error {
 		"hotAuthors":       c.getHotAuthors(),
 		"getUserName":      c.getUserName,
 		"getUserAvatarURL": c.getUserAvatarURL,
+		"friendlyTime":     functions.GetFriendlyTime,
 	}
 
 	return ctx.Render(http.StatusOK, "posts/list", data)
