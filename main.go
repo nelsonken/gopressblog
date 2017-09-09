@@ -7,6 +7,7 @@ import (
 	"blog/services"
 
 	"github.com/fpay/gopress"
+	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
 
 const (
@@ -25,13 +26,15 @@ func main() {
 	opts := &config.Options{}
 	opts.Database = &services.DBOptions{}
 	opts.ScoreRule = &services.ScoreRule{}
+	opts.Elastic = &services.ElasticOption{}
 	config.GetConfig(ConfigFile, opts)
 
 	// services register
 	dbs := services.NewDBService(opts.Database.DBType, opts.Database)
 	vs := services.NewValidatorService()
 	score := services.NewScoreService(opts.ScoreRule)
-	s.RegisterServices(dbs, vs, score)
+	es := services.NewElasticService()
+	s.RegisterServices(dbs, vs, score, es)
 
 	// register middlewares
 	s.RegisterGlobalMiddlewares(

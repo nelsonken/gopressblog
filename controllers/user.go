@@ -15,7 +15,6 @@ import (
 
 // UserController user controller
 type UserController struct {
-	app   *gopress.App
 	db    *services.DBService
 	valid *services.Validator
 }
@@ -28,7 +27,6 @@ func NewUserController() *UserController {
 // RegisterRoutes registes routes to app
 // It is used to implements gopress.Controller.
 func (c *UserController) RegisterRoutes(app *gopress.App) {
-	c.app = app
 	c.db = app.Services.Get(services.DBServerName).(*services.DBService)
 	c.valid = app.Services.Get(services.ValidatorServiceName).(*services.Validator)
 	app.GET("/logout", c.Logout)

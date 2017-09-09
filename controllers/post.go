@@ -19,6 +19,7 @@ type PostController struct {
 	title  string
 	scRule *services.ScoreService
 	group  *echo.Group
+	es     *services.ElasticService
 }
 
 // NewPostController returns post controller instance.
@@ -27,6 +28,7 @@ func NewPostController(group *echo.Group) *PostController {
 	c.group = group
 
 	group.GET("/posts", c.ListPosts)
+	group.GET("/posts/search", c.SearchPost)
 	group.GET("/posts/create", c.CreatePage)
 	group.GET("/posts/update/:id", c.UpdatePage)
 	group.POST("/posts/update", c.UpdatePost)
@@ -42,6 +44,7 @@ func NewPostController(group *echo.Group) *PostController {
 func (c *PostController) RegisterRoutes(app *gopress.App) {
 	c.db = app.Services.Get(services.DBServerName).(*services.DBService)
 	c.scRule = app.Services.Get(services.ScoreServiceName).(*services.ScoreService)
+	c.es = app.Services.Get(services.ElasticServiceName).(*services.ElasticService)
 	c.title = "BLOG-Article"
 }
 
@@ -66,12 +69,6 @@ func (c *PostController) ListPosts(ctx gopress.Context) error {
 		return ctx.Redirect(http.StatusFound, "/assets/404.html")
 	}
 
-	hotAuthorsID := []uint{}
-	c.db.ORM.Model(&models.Account{}).Order("today_income desc").Limit(10).Pluck("owner_id", &hotAuthorsID)
-	fmt.Println(hotAuthorsID)
-	hotAuthors := []*models.User{}
-	c.db.ORM.Select("id, name").Where("id in (?)", hotAuthorsID).Find(&hotAuthors)
-
 	data := map[string]interface{}{
 		"headTitle":    c.title,
 		"haveMessage":  ctx.Get("haveMessage"),
@@ -79,11 +76,19 @@ func (c *PostController) ListPosts(ctx gopress.Context) error {
 		"avatar":       functions.GetAvatarURL(getUser(ctx).Avatar),
 		"posts":        pl.Posts,
 		"pagerContent": functions.GeneratePager(pl.Page, pl.Total, pl.Limit, pl.OrderBy, "/blog/posts", nil),
-		"hotAuthors":   hotAuthors,
+		"hotAuthors":   c.getHotAuthors(),
 		"getUserName":  c.getUserName,
 	}
 
 	return ctx.Render(http.StatusOK, "posts/list", data)
+}
+
+func (c *PostController) getHotAuthors() []*models.User {
+	hotAuthorsID := []uint{}
+	c.db.ORM.Model(&models.Account{}).Order("today_income desc").Limit(10).Pluck("owner_id", &hotAuthorsID)
+	hotAuthors := []*models.User{}
+	c.db.ORM.Select("id, name").Where("id in (?)", hotAuthorsID).Find(&hotAuthors)
+	return hotAuthors
 }
 
 // CreatePage show create page
@@ -241,4 +246,33 @@ func (c *PostController) getUserName(uID uint) string {
 	u := &models.User{}
 	c.db.ORM.Select("name").First(u, uID)
 	return u.Name
+}
+
+// SearchPost search posts
+func (c *PostController) SearchPost(ctx gopress.Context) error {
+	keyword := ctx.QueryParam("keyword")
+	pageS := ctx.QueryParam("page")
+	page, _ := strconv.Atoi(pageS)
+	if page < 1 {
+		page++
+	}
+
+	limit := 10
+	posts, err := c.es.SearchPosts(keyword, limit, page)
+
+	data := map[string]interface{}{
+		"headTitle":   c.title,
+		"haveMessage": ctx.Get("haveMessage"),
+		"messageNum":  ctx.Get("messageNum"),
+		"avatar":      functions.GetAvatarURL(getUser(ctx).Avatar),
+		"posts":       posts,
+		"keyword":     keyword,
+		"hotAuthors":  c.getHotAuthors(),
+		"getUserName": c.getUserName,
+	}
+	if err != nil {
+		data["message"] = err.Error()
+	}
+
+	return ctx.Render(http.StatusOK, "posts/search", data)
 }

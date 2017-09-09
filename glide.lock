@@ -1,5 +1,5 @@
-hash: 15719455892a9c76483b4500ca420989c313a932492540abeec43343394ab0a9
-updated: 2017-09-07T12:23:33.71632237+08:00
+hash: e451d258fdca0a4ddd8000baef509b850d9f8b1fa5552094ba7b3f34d508e1f2
+updated: 2017-09-08T20:40:25.210368285+08:00
 imports:
 - name: github.com/aymerick/raymond
   version: a2232af10b53ef1ae5a767f5178db3a6c1dab655
@@ -8,7 +8,7 @@ imports:
   - lexer
   - parser
 - name: github.com/fpay/gopress
-  version: 7d5bf4fbcf64c6b9f30e95664e9e031b43448b3f
+  version: b1d49655b6699d11bf6889fb7170275662a0307d
 - name: github.com/go-playground/locales
   version: 1e5f1161c6416a5ff48840eb8724a394e48cc534
   subpackages:
@@ -34,6 +34,10 @@ imports:
   version: ad5389df28cdac544c99bd7b9161a0b5b6ca9d1b
 - name: github.com/mattn/go-isatty
   version: fc9e8d8ef48496124e79ae0df75490096eccf6fe
+- name: github.com/olivere/elastic
+  version: edbef41beaacc2ee95e61af8faff04e67c01e268
+- name: github.com/pkg/errors
+  version: c605e284fe17294bda444b34710735b29d1a9d90
 - name: github.com/sirupsen/logrus
   version: f006c2ac4710855cf0f916dd6b77acf6b048dc6e
 - name: github.com/spf13/cobra
@@ -53,12 +57,17 @@ imports:
   - blowfish
   - ssh/terminal
 - name: golang.org/x/sys
-  version: 9aade4d3a3b7e6d876cd3823ad20ec45fc035402
+  version: a45f55524b7ec57890cfa6c6bc06b47f877be0d1
   subpackages:
   - unix
   - windows
 - name: gopkg.in/go-playground/validator.v9
   version: a021b2ec9a8a8bb970f3f15bc42617cb520e8a64
+- name: gopkg.in/olivere/elastic.v5
+  version: edbef41beaacc2ee95e61af8faff04e67c01e268
+  subpackages:
+  - config
+  - uritemplates
 - name: gopkg.in/yaml.v2
   version: eb3733d160e74a9c7e442f435eb3bea458e1d19f
 testImports: []
