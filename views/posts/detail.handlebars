@@ -2,7 +2,7 @@
 <div class="row marketing">
     <div class="col-lg-10 col-lg-offset-1">
         <div class="panel">
-            <div class="panel-heading">
+            <div class="panel-title">
                 <h2 class="post-title">{{ post.title }}</h2>
                 <div>
                     <h5>作者:{{ author.name }}&nbsp;-&nbsp;{{ post.createdAt }}</h5>
@@ -14,7 +14,7 @@
             <div class="panel-footer">
                 <form method="post" action="/blog/comments/create">
                     <div class="form-group">
-                        <input type="hidden" name="post_id" value="{{ post.ID }}" />
+                        <input type="hidden" name="post_id" value="{{ post.ID }}"/>
                         <textarea name="content" class="form-control"></textarea>
                     </div>
                     <div class="form-group">
@@ -25,24 +25,23 @@
                             <option value="{{ . }}">回复:&nbsp;{{ getUserName(.) }}</option>
                             {{/each}}
                         </select>
-                        <input type="submit" class="btn-primary" value="评论" />
+                        <input type="submit" class="btn-primary" value="评论"/>
                     </div>
                 </form>
-            </div>
-            <div class="panel-body comment-list">
 
-            {{#each comments}}
-            <div class="well">
-                <div class="commentator-name">
-                    <span style="margin-right:5px;"><img width="24" height="24" src="{{ getUserAvatarURL(authorID) }}" /></span>
-                    <b>{{ getUserName(authorID) }}:</b>
-                </div>
-                <div class="comment-item" commentID="{{ ID }}">
-                    <label class="comment-label">
-                        <a href="javascript:void(0);">{{{ content }}}</a>
-                        <i class="label-arrow label-arrow-l"></i>
-                    </label>
-                </div>
+                {{#each comments}}
+                <div class="well">
+                    <div class="commentator-name">
+                        <span style="margin-right:5px;"><img width="24" height="24"
+                                                             src="{{ getUserAvatarURL(authorID) }}"/></span>
+                        <b>{{ getUserName(authorID) }}:</b>
+                    </div>
+                    <div class="comment-item" commentID="{{ ID }}">
+                        <label class="comment-label">
+                            <a href="javascript:void(0);">{{{ content }}}</a>
+                            <i class="label-arrow label-arrow-l"></i>
+                        </label>
+                    </div>
                 </div>
                 {{/each}}
             </div>
@@ -55,7 +54,7 @@
         content.innerHTML = markdown.toHTML(content.innerHTML);
     }
 
-    var $ = function(id) {
+    var $ = function (id) {
         return document.getElementById(id);
     };
     View($("markdownontent"));

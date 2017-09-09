@@ -1,12 +1,12 @@
 {{> top }} {{> header }} {{> nav }}
 <div class="row marketing">
     <div class="col-lg-10 col-lg-offset-1 panel">
-        <div class="panel-heading clearfix">
+        <div class="panel-title clearfix">
             <h2>文章列表</h2>
             <input type="search" class="search"  placeholder="输入关键字" id="searchPost" value="{{ keyword }}"/><button onclick="search()" class="btn btn-search">搜索</button>
         </div>
         <div class="row row-width float-left panel-body">
-            <div>
+            <div class="panel-heading">
                 时间：&nbsp;<a href="/blog/posts?sort=created_at">倒序</a>|<a href="/blog/posts">正序</a>
             </div>
             <div class="col-lg-6 float-left post-list">
