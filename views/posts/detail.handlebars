@@ -54,7 +54,9 @@
 <script type="text/javascript" src="/assets/js/markdown.js"></script>
 <script>
     function View(content) {
-        content.innerHTML = markdown.toHTML(content.innerHTML);
+        text = content.innerHTML
+        text = text.replace(/\&gt\;/g, ">")
+        content.innerHTML = markdown.toHTML(text);
     }
 
     var $ = function (id) {
