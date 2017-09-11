@@ -5,6 +5,8 @@ import (
 	"blog/models"
 	"blog/services"
 	"context"
+	"fmt"
+	"os"
 	"strconv"
 	"time"
 
@@ -42,6 +44,7 @@ func createBlogIndex() {
 		// Handle error
 		panic(err)
 	}
+	fmt.Println("创建索引成功")
 }
 
 func syncPosts() {
@@ -72,9 +75,51 @@ func syncPosts() {
 			panic(err)
 		}
 	}
+	fmt.Println("同步文章到elastic成功")
+}
+
+func clearTodayIncome() {
+	db := getOrm()
+	err := db.Table("accounts").Where("today_income > ?", 0).Updates(map[string]interface{}{
+		"today_income": 0,
+	}).Error
+
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("清除今日活跃点数成功")
+}
+
+func awardActiveUser() {
+	db := getOrm()
+	var incomes []float64
+	db.Model(&models.User{}).Order("today_income desc").Limit(10).Pluck("today_income", &incomes)
+	lastUserIncome := incomes[len(incomes)-1]
+	if lastUserIncome == 0 {
+		return
+	}
+	err := db.Table("accounts").Where("today_income >= ?", lastUserIncome).Updates(map[string]interface{}{"total": gorm.Expr("total + ?", 5)}).Error
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("奖励前十名用户成功")
 }
 
 func main() {
 	//createBlogIndex()
-	syncPosts()
+	if len(os.Args) < 2 {
+		panic("usage:\n\t elastic act \n act: syncpost-sync posts to elastic; index: index blog index; scoreclear: clear today's active scores")
+	}
+
+	switch os.Args[1] {
+	case "syncpost":
+		syncPosts()
+	case "index":
+		createBlogIndex()
+	case "scoreclear":
+		awardActiveUser()
+		clearTodayIncome()
+	default:
+		panic("act invalid, just support syncposts and index act")
+	}
 }

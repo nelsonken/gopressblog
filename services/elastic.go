@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com/fpay/gopress"
@@ -30,10 +31,10 @@ type ElasticOption struct {
 }
 
 // NewElasticService returns instance of elastic service
-func NewElasticService() *ElasticService {
+func NewElasticService(opts *ElasticOption) *ElasticService {
 	es := new(ElasticService)
 	var err error
-	es.EsClient, err = elastic.NewClient(elastic.SetURL("http://127.0.0.1:9200"))
+	es.EsClient, err = elastic.NewClient(elastic.SetURL(fmt.Sprintf("http://%s:%s", opts.Host, opts.Port)))
 	if err != nil {
 		panic(err)
 	}
@@ -55,16 +56,16 @@ func (s *ElasticService) RegisterContainer(c *gopress.Container) {
 // SearchPosts Search
 func (s *ElasticService) SearchPosts(keyword string, limit, page int) ([]*models.Post, error) {
 	//s.EsClient.Index(Index).Type("posts").
-	// Search with a term query
 	ctx, cancel := context.WithTimeout(context.Background(), time.Second*300)
 	defer cancel()
 
 	matchPhraseQuery := elastic.NewMatchPhraseQuery("Title", keyword)
 	searchResult, err := s.EsClient.Search().
 		Index(Index).
-		Type("posts").                        // search in index
-		Query(matchPhraseQuery).              // specify the query
-		From((page - 1) * limit).Size(limit). // take documents 0-9
+		Type("posts").           // search in index
+		Query(matchPhraseQuery). // specify the query
+		From((page - 1) * limit).
+		Size(limit). // take documents by limits
 		Do(ctx)
 
 	if err != nil {
@@ -76,8 +77,6 @@ func (s *ElasticService) SearchPosts(keyword string, limit, page int) ([]*models
 	if searchResult.Hits.TotalHits > 0 {
 		// Iterate through results
 		for _, hit := range searchResult.Hits.Hits {
-			// hit.Index contains the name of the index
-
 			// Deserialize hit.Source into a Tweet (could also be just a map[string]interface{}).
 			p := &models.Post{}
 			err := json.Unmarshal(*hit.Source, p)

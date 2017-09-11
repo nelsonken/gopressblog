@@ -33,7 +33,7 @@ func main() {
 	dbs := services.NewDBService(opts.Database.DBType, opts.Database)
 	vs := services.NewValidatorService()
 	score := services.NewScoreService(opts.ScoreRule)
-	es := services.NewElasticService()
+	es := services.NewElasticService(opts.Elastic)
 	s.RegisterServices(dbs, vs, score, es)
 
 	// register middlewares

@@ -159,11 +159,11 @@ func GetFriendlyTime(t time.Time) string {
 		return fmt.Sprintf("%d 天前", int(h/24))
 	}
 
-	if h > 0 && h < 24 {
+	if h >= 1 && h < 24 {
 		return fmt.Sprintf("%d 小时前", int(h))
 	}
 
-	if m > 0 {
+	if m >= 1 {
 		return fmt.Sprintf("%d 分钟前", int(m))
 	}
 

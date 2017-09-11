@@ -3,11 +3,11 @@
     <div class="col-lg-10 col-lg-offset-1 panel">
         <div class="panel-title clearfix">
             <h2>搜索结果</h2>
+            <span class="error">{{ message }}</span>
+            <input type="search" class="search" placeholder="输入关键字" id="searchPost" value="{{ keyword }}"/>
+            <button onclick="search()" class="btn btn-search">搜索</button>
         </div>
-        <span class="error">{{ message }}</span>
-        <input type="search" class="search" placeholder="输入关键字" id="searchPost" value="{{ keyword }}"/>
-        <button onclick="search()" class="btn btn-search">搜索</button>
-        <div class="row row-width float-left panel-body">
+        <div class="row-width panel-body">
             <div class="col-lg-6 float-left post-list">
                 <dl class="dl">
                     {{#each posts}}

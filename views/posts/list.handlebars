@@ -3,12 +3,16 @@
     <div class="col-lg-10 col-lg-offset-1 panel">
         <div class="panel-title clearfix">
             <h2>文章列表</h2>
-            <input type="search" class="search"  placeholder="输入关键字" id="searchPost" value="{{ keyword }}"/><button onclick="search()" class="btn btn-search">搜索</button>
+            <input type="search" class="search" placeholder="输入关键字" id="searchPost" value="{{ keyword }}" /><button onclick="search()" class="btn btn-search">搜索</button>
+            <br/>
+            </br/>
         </div>
-        <div class="row row-width float-left panel-body">
-            <div class="panel-heading">
-                时间：&nbsp;<a href="/blog/posts?sort=created_at">倒序</a>|<a href="/blog/posts">正序</a>
+        <div class="panel-heading">
+            <div>
+                时间：&nbsp;<a href="/blog/posts?sort=created_at">倒序</a>|<a href="/blog/posts">正序</a>                
             </div>
+        </div>
+        <div class="panel-body row-width">
             <div class="col-lg-6 float-left post-list">
                 <dl class="dl">
                     {{#each posts}}
@@ -30,11 +34,11 @@
     </div>
 </div>
 <script type="text/javascript">
-function search() {
-    i = document.getElementById("searchPost")
-    if (i.value != "") {
-        window.location.href='/blog/posts/search?keyword='+i.value;
+    function search() {
+        i = document.getElementById("searchPost")
+        if (i.value != "") {
+            window.location.href = '/blog/posts/search?keyword=' + i.value;
+        }
     }
-}
 </script>
 {{> footer }} {{> bottom }}
