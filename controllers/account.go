@@ -124,7 +124,15 @@ func (c *AccountController) MyAccount(ctx gopress.Context) error {
 func (c *AccountController) UploadAvatar(ctx gopress.Context) error {
 	avatarHead, err := ctx.FormFile("avatar")
 	if err != nil {
-		return ctx.Redirect(http.StatusFound, "/blog/account/profile?message=上传文件格式不正确")
+		return ctx.Redirect(http.StatusFound, "/blog/account/profile?message="+err.Error())
+	}
+
+	if functions.IsValidPic(avatarHead.Filename) {
+		return ctx.Redirect(http.StatusFound, "/blog/account/profile?message=上传图片格式不正确")
+	}
+
+	if avatarHead.Size > 1024*1024 {
+		return ctx.Redirect(http.StatusFound, "/blog/account/profile?message=图片不能大于1M")
 	}
 
 	fileName := fmt.Sprintf("assets/image/avatar/%s", avatarHead.Filename)

@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -168,4 +169,17 @@ func GetFriendlyTime(t time.Time) string {
 	}
 
 	return "刚刚"
+}
+
+// IsValidPic is valid pic
+func IsValidPic(fileName string) bool {
+	if !strings.HasSuffix(fileName, ".png") ||
+		!strings.HasSuffix(fileName, ".jpg") ||
+		!strings.HasSuffix(fileName, ".jpeg") ||
+		!strings.HasSuffix(fileName, ".gif") ||
+		!strings.HasSuffix(fileName, ".bmp") {
+		return false
+	}
+
+	return true
 }
