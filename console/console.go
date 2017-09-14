@@ -20,7 +20,7 @@ const (
 )
 
 func getOrm() *gorm.DB {
-	opts := &config.Options{}
+	opts := &config.BlogOptions{}
 	opts.Database = &services.DBOptions{}
 	opts.Elastic = &services.ElasticOption{}
 	config.GetConfig("../config/config.yaml", opts)

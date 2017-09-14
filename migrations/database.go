@@ -8,7 +8,7 @@ import (
 
 func main() {
 
-	opts := &config.Options{}
+	opts := &config.BlogOptions{}
 	opts.Database = &services.DBOptions{}
 	config.GetConfig("../config/config.yaml", opts)
 

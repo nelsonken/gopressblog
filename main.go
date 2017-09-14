@@ -23,7 +23,7 @@ func main() {
 	})
 
 	// opt
-	opts := &config.Options{}
+	opts := &config.BlogOptions{}
 	opts.Database = &services.DBOptions{}
 	opts.ScoreRule = &services.ScoreRule{}
 	opts.Elastic = &services.ElasticOption{}
